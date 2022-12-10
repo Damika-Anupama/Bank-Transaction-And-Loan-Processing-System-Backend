@@ -12,4 +12,12 @@ router.get('/', async function(req, res, next) {
   }
 });
 
+router.post('/', async function(req, res, next) {
+    try {
+      res.json(await programmingLanguages.create(req.body));
+    } catch (err) {
+      console.error(`Error while creating user`, err.message);
+      next(err);
+    }
+  });
 module.exports = router;
