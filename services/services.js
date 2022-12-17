@@ -17,21 +17,19 @@ async function getMultiple(page = 1){
 }
 
 async function create(user){
-    const result = await db.query(
-      `INSERT INTO user 
-      (username, password, fullname, type, gender, dob, address, email, contact_no) 
-      VALUES(
-        ${user.username}, 
-        ${user.password}, 
-        ${user.fullname}, 
-        ${user.type}, 
-        ${user.gender}, 
-        ${user.dob}, 
-        ${user.address}, 
-        ${user.email}, 
-        ${user.contact_no}
-        )`
-    );
+  const result = await db.query(
+    "INSERT INTO user (username, password, fullname, type, gender, dob, address, email, contact_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+        user.username,
+        user.password,
+        user.fullname,
+        user.type,
+        user.gender,
+        user.dob,
+        user.address,
+        user.email,
+        user.contact_no
+    ]
+);
   
     let message = 'Error in creating the user!';
   
@@ -42,7 +40,38 @@ async function create(user){
     return {message};
   }
 
+async function update(id, user){
+  let message = '';
+  const result = await db.query(
+    'UPDATE user SET username = ?, password = ?, fullname = ?, type = ?, gender = ?, dob = ?, address = ?, email = ?, contact_no = ? WHERE user_id = ?',
+     [user.username, user.password, user.fullname, user.type, user.gender, user.dob, user.address, user.email, user.contact_no, id], function (error, results, fields) {
+    if (error) throw error;
+      message = 'Error in updating User';
+  });
+
+  if (result.affectedRows) {
+    message = 'User updated successfully';
+  }
+
+  return {message};
+}
+
+async function remove(id){
+  const result = await db.query(
+    `DELETE FROM user WHERE user_id=${id}`
+  );
+
+  let message = 'Error in deleting user';
+
+  if (result.affectedRows) {
+    message = 'User deleted successfully!';
+  }
+
+  return {message};
+}
 module.exports = {
   getMultiple,
-  create
+  create,
+  update,
+  remove
 }
