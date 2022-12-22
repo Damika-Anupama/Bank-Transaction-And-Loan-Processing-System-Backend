@@ -1,23 +1,6 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+
 <a name="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
 
-
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -30,8 +13,8 @@
 <br />
 <div align="center">
   <a href="https://github.com/CSE-Semester3-Group7-Project/Backend/">
-    <img src="assets/uom.png" alt="Logo" width="100" height="100" style = "margin: 0 20px 0">
-    <img src="assets/logo.png" alt="Logo" width="200" height="100" margin="0 10 0">
+    <img src="assets/uom.png" alt="Logo" width="100" height="100" style = "margin: 0 50px 0 0">
+    <img src="assets/logo.png" alt="Logo" width="250" height="100" margin="0 10 0">
   </a>
 
   <h3 align="center">Bank Transaction And Loan Processing System - Backend</h3>
@@ -39,7 +22,7 @@
   <p align="center">
     A Group Project Done by Group No. 7 for Semester 3 Module CS3043 - Database Systems
     <br />
-    <a href="https://github.com/CSE-Semester3-Group7-Project/Backend/assets/Project Description.pdf"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/CSE-Semester3-Group7-Project/Backend/assets/ProjectDescription.pdf"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/CSE-Semester3-Group7-Project/Backend/issues">Report Bug</a>
@@ -79,9 +62,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 <div align = center>
-  <img src="assets/logo1.png" alt="Logo" width="400" height="320" style = "margin: 20px">
+  <img src="assets/logo1.png" alt="Logo" width="400" height="350" style = "margin: 50px">
 </div>
-
+<br>
 This is the main group project given by the Computer Science Department, University of Moratuwa in the Semester 3 CS3043 - Database Systems Module. Here contains the backend of the Bank Transaction And Loan Processing System. If you want to go to the frontend of this application, you can find it by following this <a href="https://github.com/CSE-Semester3-Group7-Project/Frontend">link</a>.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -205,13 +188,14 @@ Use this space to list resources you find helpful and would like to give credit 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
+
+[contributors-shield]: https://img.shields.io/github/contributors/CSE-Semester3-Group7-Project/Backend.svg?style=for-the-badge
 [contributors-url]: https://github.com/CSE-Semester3-Group7-Project/Backend/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/CSE-Semester3-Group7-Project/Backend.svg?style=for-the-badge
 [forks-url]: https://github.com/CSE-Semester3-Group7-Project/Backend/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/CSE-Semester3-Group7-Project/Backend.svg?style=for-the-badge
 [stars-url]: https://github.com/CSE-Semester3-Group7-Project/Backend/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/CSE-Semester3-Group7-Project/Backend.svg?style=for-the-badge
 [issues-url]: https://github.com/CSE-Semester3-Group7-Project/Backend/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/CSE-Semester3-Group7-Project/Backend.svg?style=for-the-badge
 [license-url]: https://github.com/CSE-Semester3-Group7-Project/Backend/LICENSE
