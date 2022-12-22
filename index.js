@@ -1,10 +1,9 @@
+require('dotenv').config();
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = process.env.API_PORT;
 const routes = require("./routes/routes");
 const jwt = require('jsonwebtoken');
-
-console.log(process.env.UV_THREADPOOL_SIZE);
 
 app.use(express.json());
 app.use(
@@ -24,7 +23,7 @@ app.use((err, req, res, next) => {
   return;
 });
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Bank app listening at http://localhost:${port}`);
 });
 
 // /* using JWT web token */
