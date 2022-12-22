@@ -2,6 +2,24 @@ const db = require('./db');
 const helper = require('../helper');
 const config = require('../config');
 
+async function getById(id){
+  const result = await db.query(
+    `SELECT * FROM user WHERE user_id=?`,[id]
+  );
+
+  const data = helper.emptyOrRows(result);
+
+  return {data};
+}
+async function getByName(username){
+  const result = await db.query(
+    `SELECT * FROM user WHERE username=?`,[username]
+  );
+
+  const data = helper.emptyOrRows(result);
+
+  return {data};
+}
 async function getMultiple(page = 1){
   const offset = helper.getOffset(page, config.listPerPage);
   const rows = await db.query(
@@ -15,7 +33,6 @@ async function getMultiple(page = 1){
     meta
   }
 }
-
 async function create(user){
   const result = await db.query(
     "INSERT INTO user (username, password, fullname, type, gender, dob, address, email, contact_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [
@@ -69,7 +86,10 @@ async function remove(id){
 
   return {message};
 }
+
 module.exports = {
+  getById,
+  getByName,
   getMultiple,
   create,
   update,

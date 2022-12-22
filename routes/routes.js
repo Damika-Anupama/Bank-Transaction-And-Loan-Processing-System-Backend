@@ -2,12 +2,21 @@ const express = require('express');
 const router = express.Router();
 const users = require('../services/services');
 
-/* GET user */
+/* GET user by id */
 router.get('/:id', async function(req, res, next) {
   try {
-    res.json(await users.getMultiple(req.query.page));
+    res.json(await users.getById(req.params.id));
   } catch (err) {
-    console.error(`Error while getting users `, err.message);
+    console.error(`Error while getting user `, err.message);
+    next(err);
+  }
+});
+/* GET user by name */
+router.get('/name/:name', async function(req, res, next) {
+  try {
+    res.json(await users.getByName(req.params.name));
+  } catch (err) {
+    console.error(`Error while getting user `, err.message);
     next(err);
   }
 });
