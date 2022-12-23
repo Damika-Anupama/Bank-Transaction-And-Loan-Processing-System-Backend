@@ -16,7 +16,16 @@ router.get('/name/:name', async function(req, res, next) {
   try {
     res.json(await users.getByName(req.params.name));
   } catch (err) {
-    console.error(`Error while getting user `, err.message);
+    console.error(`Error while getting user' name`, err.message);
+    next(err);
+  }
+});
+/* GET user by email */
+router.get('/email/:email', async function(req, res, next) {
+  try {
+    res.json(await users.getByEmail(req.params.email));
+  } catch (err) {
+    console.error(`Error while getting user's email`, err.message);
     next(err);
   }
 });

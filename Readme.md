@@ -22,7 +22,7 @@
   <p align="center">
     A Group Project Done by Group No. 7 for Semester 3 Module CS3043 - Database Systems
     <br />
-    <a href="https://github.com/CSE-Semester3-Group7-Project/Backend/assets/ProjectDescription.pdf"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/CSE-Semester3-Group7-Project/Backend/blob/main/assets/ProjectDescription.pdf"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/CSE-Semester3-Group7-Project/Backend/issues">Report Bug</a>

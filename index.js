@@ -25,32 +25,3 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(`Bank app listening at http://localhost:${port}`);
 });
-
-// /* using JWT web token */
-// /* Generate a JWT when a user logs in to your application */
-// app.post('/login', (req, res) => {
-//   // Verify the user's credentials
-//   // Generate a JWT if the credentials are valid
-//   const token = jwt.sign({ userId: user.id }, 'secretkey');
-//   res.send({ token });
-// });
-
-// /* Protect routes that require authentication by verifying the JWT */
-// app.get('/protected', verifyToken, (req, res) => {
-//   // The request will have an additional `user` property with the
-//   // user's information if the JWT is valid
-//   res.send(req.user);
-// });
-
-// function verifyToken(req, res, next) {
-//   // Get the token from the request header
-//   const token = req.headers['x-access-token'];
-//   if (!token) return res.status(401).send({ auth: false, message: 'No token provided' });
-
-//   // Verify the token
-//   jwt.verify(token, 'secretkey', (err, decoded) => {
-//     if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token' });
-//     req.user = decoded;
-//     next();
-//   });
-// }

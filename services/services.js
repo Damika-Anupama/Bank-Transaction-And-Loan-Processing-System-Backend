@@ -1,6 +1,6 @@
 const db = require('./db');
 const helper = require('../helper');
-const config = require('../config');
+const config = require('../config/config');
 
 async function getById(id){
   const result = await db.query(
@@ -14,6 +14,15 @@ async function getById(id){
 async function getByName(username){
   const result = await db.query(
     `SELECT * FROM user WHERE username=?`,[username]
+  );
+
+  const data = helper.emptyOrRows(result);
+
+  return {data};
+}
+async function getByEmail(email){
+  const result = await db.query(
+    `SELECT * FROM user WHERE email=?`,[email]
   );
 
   const data = helper.emptyOrRows(result);
@@ -90,6 +99,7 @@ async function remove(id){
 module.exports = {
   getById,
   getByName,
+  getByEmail,
   getMultiple,
   create,
   update,
