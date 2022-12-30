@@ -3,8 +3,8 @@ const express = require("express");
 const app = express();
 const port = process.env.API_PORT;
 const routes = require("./routes/routes");
-const jwt = require('jsonwebtoken');
 
+// parse incoming requests as JSON
 app.use(express.json());
 app.use(
   express.urlencoded({
@@ -14,7 +14,7 @@ app.use(
 app.get("/", (req, res) => {
   res.json({ message: "ok" });
 });
-app.use("/user", routes);
+app.use("/api/v1", routes);
 /* Error handler middleware */
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
