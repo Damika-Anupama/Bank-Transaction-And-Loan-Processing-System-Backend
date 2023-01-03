@@ -5,6 +5,7 @@ const port = process.env.API_PORT;
 const userRouter = require('./routes/user.router');
 const accountRouter = require('./routes/account.router');
 const fdRouter = require('./routes/fd.router');
+const branchRouter = require('./routes/branch.router');
 
 // parse incoming requests as JSON
 app.use(express.json());
@@ -17,6 +18,7 @@ app.get("/", (req, res) => {
   res.json({ message: "ok" });
 });
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/branch", branchRouter);
 app.use("/api/v1/account", accountRouter);
 app.use("/api/v1/fd", fdRouter);
 

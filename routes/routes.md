@@ -1,0 +1,1 @@
+This is the service layer. Here we apply business logics and normal logics. i.e. : When we'r inserting a user, if user type is "MANAGER" we add a new row to the manager table.
