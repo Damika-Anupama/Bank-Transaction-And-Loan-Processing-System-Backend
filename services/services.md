@@ -1,1 +1,3 @@
-This is the Data Accessing Layer of backend. So we apply CRUD operations for every entity without thinking the logic.
+- This is the Data Accessing Layer of backend. So we apply CRUD operations for every entity without thinking the logic.
+- We don't think about the logics applying in the whole application
+- As an example, we can be able to update normal_loan table by loan_detail_id. Normally it's not an approved way. A loan's owner can't be change. But since this is the data accessing layer there should be a function for this work too.
