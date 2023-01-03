@@ -2,7 +2,9 @@ require('dotenv').config();
 const express = require("express");
 const app = express();
 const port = process.env.API_PORT;
-const routes = require("./routes/routes");
+const userRouter = require('./routes/user.router');
+const accountRouter = require('./routes/account.router');
+const fdRouter = require('./routes/fd.router');
 
 // parse incoming requests as JSON
 app.use(express.json());
@@ -14,7 +16,10 @@ app.use(
 app.get("/", (req, res) => {
   res.json({ message: "ok" });
 });
-app.use("/api/v1", routes);
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/account", accountRouter);
+app.use("/api/v1/fd", fdRouter);
+
 /* Error handler middleware */
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

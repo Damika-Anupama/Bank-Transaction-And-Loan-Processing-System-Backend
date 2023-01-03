@@ -1,50 +1,74 @@
-const db = require('./db');
-const helper = require('../helper');
-const config = require('../config/config');
+const db = require("./db");
+const helper = require("../helper");
+const config = require("../config/config");
 
-async function getById(id){
-  const result = await db.query(
-    `SELECT * FROM user WHERE user_id=?`,[id]
-  );
+async function getById(id) {
+  const result = await db.query(`SELECT * FROM user WHERE user_id=?`, [id]);
 
   const data = helper.emptyOrRows(result);
 
-  return {data};
+  return { data };
 }
-async function getByName(username){
-  const result = await db.query(
-    `SELECT * FROM user WHERE username=?`,[username]
-  );
+async function getByName(username) {
+  const result = await db.query(`SELECT * FROM user WHERE username=?`, [
+    username,
+  ]);
 
   const data = helper.emptyOrRows(result);
 
-  return {data};
+  return { data };
 }
-async function getByEmail(email){
-  const result = await db.query(
-    `SELECT * FROM user WHERE email=?`,[email]
-  );
+async function getByEmail(email) {
+  const result = await db.query(`SELECT * FROM user WHERE email=?`, [email]);
 
   const data = helper.emptyOrRows(result);
 
-  return {data};
+  return { data };
 }
-async function getMultiple(page = 1){
+async function getMultiple(page = 1) {
   const offset = helper.getOffset(page, config.listPerPage);
   const rows = await db.query(
     `SELECT * FROM user LIMIT ${offset},${config.listPerPage}`
   );
   const data = helper.emptyOrRows(rows);
-  const meta = {page};
+  const meta = { page };
 
   return {
     data,
-    meta
-  }
+    meta,
+  };
 }
-async function create(user){
+async function create(user) {
   const result = await db.query(
-    "INSERT INTO user (username, password, fullname, type, gender, dob, address, email, contact_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+    "INSERT INTO user (username, password, fullname, type, gender, dob, address, email, contact_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    [
+      user.username,
+      user.password,
+      user.fullname,
+      user.type,
+      user.gender,
+      user.dob,
+      user.address,
+      user.email,
+      user.contact_no,
+    ]
+  );
+
+  let message = "Error in creating the user!";
+
+  if (result.affectedRows) {
+    message = "user created successfully!";
+  }
+
+  return { message };
+}
+
+async function update(id, user) {
+  let message = "User not found";
+  if (getById(id)) {
+    const result = await db.query(
+      "UPDATE user SET username = ?, password = ?, fullname = ?, type = ?, gender = ?, dob = ?, address = ?, email = ?, contact_no = ? WHERE user_id = ?",
+      [
         user.username,
         user.password,
         user.fullname,
@@ -53,47 +77,35 @@ async function create(user){
         user.dob,
         user.address,
         user.email,
-        user.contact_no
-    ]
-);
-  
-    let message = 'Error in creating the user!';
-  
+        user.contact_no,
+        id,
+      ],
+      function (error, results, fields) {
+        if (error) throw error;
+      }
+    );
     if (result.affectedRows) {
-      message = 'user created successfully!';
+      message = "User updated successfully";
     }
-  
-    return {message};
+  } else {
+    message = "Error in updating User";
   }
 
-async function update(id, user){
-  let message = '';
-  const result = await db.query(
-    'UPDATE user SET username = ?, password = ?, fullname = ?, type = ?, gender = ?, dob = ?, address = ?, email = ?, contact_no = ? WHERE user_id = ?',
-     [user.username, user.password, user.fullname, user.type, user.gender, user.dob, user.address, user.email, user.contact_no, id], function (error, results, fields) {
-    if (error) throw error;
-      message = 'Error in updating User';
-  });
-
-  if (result.affectedRows) {
-    message = 'User updated successfully';
-  }
-
-  return {message};
+  return { message };
 }
 
-async function remove(id){
-  const result = await db.query(
-    `DELETE FROM user WHERE user_id=${id}`
-  );
-
-  let message = 'Error in deleting user';
-
-  if (result.affectedRows) {
-    message = 'User deleted successfully!';
+async function remove(id) {
+  let message = "User not found";
+  if (getById(id)) {
+    const result = await db.query(`DELETE FROM user WHERE user_id=${id}`);
+    if (result.affectedRows) {
+      message = "User deleted successfully!";
+    }
+  } else {
+    message = "Error in deleting user";
   }
 
-  return {message};
+  return { message };
 }
 
 module.exports = {
@@ -103,5 +115,5 @@ module.exports = {
   getMultiple,
   create,
   update,
-  remove
-}
+  remove,
+};

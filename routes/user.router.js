@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const users = require('../services/users');
-const jwt = require('jsonwebtoken');
 
 /* GET user by id */
 router.get('/:id', async function(req, res, next) {
