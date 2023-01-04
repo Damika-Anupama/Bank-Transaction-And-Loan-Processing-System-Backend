@@ -6,7 +6,7 @@ use bank;
 CREATE TABLE `user` (
   `user_id` INT(10) NOT NULL UNIQUE AUTO_INCREMENT,
   `username` VARCHAR(20) NOT NULL UNIQUE,
-  `password` VARCHAR(20) NOT NULL UNIQUE,
+  `password` VARCHAR(100) NOT NULL UNIQUE,
   `fullname` VARCHAR(30),
   `type` ENUM('CUSTOMER','EMPLOYEE','MANAGER','ADMIN'),
   `gender` ENUM('MALE','FEMALE','OTHER'),

@@ -1,6 +1,7 @@
 const db = require("./db");
 const helper = require("../helper");
 const config = require("../config/config");
+const bcrypt = require("bcrypt");
 
 async function getById(id) {
   const result = await db.query(`SELECT * FROM user WHERE user_id=?`, [id]);
@@ -39,6 +40,9 @@ async function getMultiple(page = 1) {
   };
 }
 async function create(user) {
+  // convert user.password to hash using bcrypt library
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(user.password, salt);
   const result = await db.query(
     "INSERT INTO user (username, password, fullname, type, gender, dob, address, email, contact_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
     [
