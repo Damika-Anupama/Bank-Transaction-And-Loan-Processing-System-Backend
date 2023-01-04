@@ -39,7 +39,7 @@ async function create(branch) {
         branch.branch_name,
         branch.branch_type,
         branch.address,
-        branch.manager_id,
+        branch.manager_id
       ]
     );
     if (result.affectedRows) {

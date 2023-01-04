@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const users = require('../services/users');
+const users = require('../services/manager');
 
 /* GET user by id */
 router.get('/:id', async function(req, res, next) {
@@ -62,11 +62,6 @@ router.post('/', async function(req, res, next) {
 router.put('/:id', async function(req, res, next) {
   try {
     res.json(await users.update(req.params.id, req.body));
-    // if (req.body.role === 'MANAGER') {
-    //   res.redirect('/managers');
-    // } else if (req.body.role === 'employee') {
-    //   res.redirect('/employees');
-    // }
   } catch (err) {
     console.error(`Error while updating user`, err.message);
     // send error response if there was a problem

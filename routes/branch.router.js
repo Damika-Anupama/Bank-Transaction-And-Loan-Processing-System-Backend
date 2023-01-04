@@ -16,7 +16,7 @@ router.get('/:id', async function(req, res, next) {
 /* GET branch by manager id */
 router.get('/manager/:id', async function(req, res, next) {
   try {
-    res.json(await branches.getByManagerId(req.params.email));
+    res.json(await branches.getByManagerId(req.params.id));
   } catch (err) {
     console.error(`Error while branch`, err.message);
     // send error response if there was a problem
