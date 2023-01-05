@@ -7,6 +7,9 @@ const accountRouter = require('./routes/account.router');
 const fdRouter = require('./routes/fd.router');
 const branchRouter = require('./routes/branch.router');
 const jwt = require("jsonwebtoken");
+const cors = require('cors');
+
+app.use(cors());
 
 // parse incoming requests as JSON
 app.use(express.json());
@@ -19,11 +22,9 @@ app.get("/", (req, res) => {
   res.json({ message: "ok" });
 });
 
-// check jwt token of the request 
-// if jwt token is valid, then call next() to continue the request and send relevant path segment to the router
-// if jwt token is invalid, then send 401 response
-// allow all requests, POST request to /api/v1/user/auth and POST request to /api/v1/user to pass without jwt token
 app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200')
+
   if (
     req.path === "/api/v1/user/auth"  && req.method === "POST"||
     req.path === "/api/v1/user" && req.method === "POST" 

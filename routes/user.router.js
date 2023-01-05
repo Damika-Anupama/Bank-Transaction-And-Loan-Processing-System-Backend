@@ -18,7 +18,7 @@ router.post("/auth", async function (req, res, next) {
       bcrypt.compare(req.body.password, user.data[0].password, (err, result) => {
         if (result) {
           const token = createJWT(user);
-          res.json({ token });
+          res.json(token);
         } else {
           res.status(401).json({ message: "Password is incorrect" });
         }
