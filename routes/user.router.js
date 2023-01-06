@@ -77,6 +77,19 @@ router.get("/", async function (req, res, next) {
     next(err);
   }
 });
+
+/* GET user dashboard details */
+router.get("/dashboard/:email", async function (req, res, next) {
+  try {
+    const userData = await users.getDashboardDetails(req.params.email);
+    res.json(userData);
+  } catch (err) {
+    console.error(`Error while getting user's dashboard details`, err.message);
+    // send error response if there was a problem
+    res.status(500).json({ message: error.message });
+    next(err);
+  }
+});
 /* POST user */
 router.post("/", async function (req, res, next) {
   try {

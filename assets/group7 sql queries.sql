@@ -33,7 +33,7 @@ CREATE TABLE `branch` (
   PRIMARY KEY (`branch_id`),
   FOREIGN KEY (`manager_id`) REFERENCES `manager`(`manager_id`) ON DELETE CASCADE
 );
-
+make one to one relationship between account and saving_account and give me code
 CREATE TABLE `account` (
   `account_id` INT(10) NOT NULL UNIQUE auto_increment,
   `user_id` INT(10) NOT NULL,
@@ -41,6 +41,7 @@ CREATE TABLE `account` (
   `account_type` ENUM('PERSONAL','ORGANIZATION'),
   `amount` DECIMAL(12,2),
   `created_date` DATE,
+  `saving_type` ENUM('CURRENT','SAVING'),
   PRIMARY KEY (`account_id`),
   FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`) ON DELETE CASCADE,
   FOREIGN KEY (`branch_id`) REFERENCES `branch`(`branch_id`) ON DELETE CASCADE,
@@ -49,7 +50,7 @@ CREATE TABLE `account` (
 
 CREATE TABLE `saving_account` (
   `saving_account_id` INT(10) NOT NULL UNIQUE AUTO_INCREMENT,
-  `account_id` INT(10) NOT NULL,
+  `account_id` INT(10) NOT NULL UNIQUE,
   `saving_account_type` ENUM('CHILD','TEEN','ADULT','SENIOR'),
   `interest_rate` ENUM('12','11','10','13'),
   `min_required_balance` ENUM('0','500','1000'),
@@ -297,3 +298,66 @@ INSERT INTO transfer (amount, from_account, to_account, transferd_time, transact
 (96082561.91, 1000021, 1000022, '2022-11-22 19:17:17', 0),
 (99099241.49, 1000012, 1000017, '2022-12-04 05:22:36', 96.27),
 (39001924.74, 1000006, 1000008, '2022-11-17 23:32:17', 0);
+
+
+/* iterate over all rows in the account table and 
+update the saving_type column value to SAVING 
+if the account table's account_id column value 
+equals one of the values from the saving_account table account_id column, 
+and to CURRENT for all other rows */
+UPDATE account
+SET saving_type = CASE
+    WHEN account_id IN (SELECT account_id FROM saving_account) THEN 'SAVING'
+    ELSE 'CURRENT'
+END;
+
+/* 
+Write a mysql function gives user_id, username and type from the user table when the email is given. 
+using the user_id give all account details as an array such as account_id, branch_id, account_type, amount, saving_type from account table. 
+for each account array item include branch_name using branch_id from the branch table instead of branch_id
+Finally compose the whole object */
+DELIMITER $$
+CREATE FUNCTION get_user_details(email VARCHAR(255))
+RETURNS JSON DETERMINISTIC
+BEGIN
+    DECLARE user_id INT;
+    DECLARE username VARCHAR(255);
+    DECLARE type VARCHAR(255);
+    DECLARE account_id INT;
+    DECLARE branch_id INT;
+    DECLARE account_type VARCHAR(255);
+    DECLARE amount DECIMAL(20,2);
+    DECLARE saving_type VARCHAR(255);
+    DECLARE branch_name VARCHAR(255);
+    DECLARE account_array JSON;
+    DECLARE user_details JSON;
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE cur1 CURSOR FOR SELECT user_id, username, type FROM user WHERE email = email;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    OPEN cur1;
+    read_loop: LOOP
+        FETCH cur1 INTO user_id, username, type;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        SET account_array = JSON_ARRAY();
+        SET user_details = JSON_OBJECT('user_id', user_id, 'username', username, 'type', type, 'accounts', account_array);
+        SET done = FALSE;
+        DECLARE cur2 CURSOR FOR SELECT account_id, branch_id, account_type, amount, saving_type FROM account WHERE user_id = user_id;
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+        OPEN cur2;
+        read_loop2: LOOP
+            FETCH cur2 INTO account_id, branch_id, account_type, amount, saving_type;
+            IF done THEN
+                LEAVE read_loop2;
+            END IF;
+            SET branch_name = (SELECT branch_name FROM branch WHERE branch_id = branch_id);
+            SET account_array = JSON_ARRAY_APPEND(account_array, '$', JSON_OBJECT('account_id', account_id, 'branch_id', branch_id, 'account_type', account_type, 'amount', amount, 'saving_type', saving_type, 'branch_name', branch_name));
+        END LOOP read_loop2;
+        CLOSE cur2;
+        SET user_details = JSON_SET(user_details, '$.accounts', account_array);
+        SELECT user_details;
+    END LOOP read_loop;
+    CLOSE cur1;
+END$$
+

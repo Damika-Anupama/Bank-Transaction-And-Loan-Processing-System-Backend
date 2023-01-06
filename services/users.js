@@ -26,6 +26,23 @@ async function getByEmail(email) {
 
   return { data };
 }
+// get dashboard details
+async function getDashboardDetails(email) {
+  return await db.query(
+    `
+    SELECT
+    type,
+    user_id,
+    (SELECT JSON_ARRAYAGG(JSON_OBJECT('account_id', account_id, 'branch_name', branch_name, 'account_type', account_type, 'amount', amount, 'saving_type', saving_type)) FROM account INNER JOIN branch ON account.branch_id = branch.branch_id WHERE user_id = (SELECT user_id FROM user WHERE email = ?)) AS accounts,
+    username
+  FROM user
+  WHERE email = ?
+  LIMIT 1;  
+   `,
+    [email, email]
+  );
+}
+
 async function getMultiple(page = 1) {
   const offset = helper.getOffset(page, config.listPerPage);
   const rows = await db.query(
@@ -69,6 +86,8 @@ async function create(user) {
 
 async function update(id, user) {
   let message = "User not found";
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(user.password, salt);
   if (getById(id)) {
     const result = await db.query(
       "UPDATE user SET username = ?, password = ?, fullname = ?, type = ?, gender = ?, dob = ?, address = ?, email = ?, contact_no = ? WHERE user_id = ?",
@@ -116,6 +135,7 @@ module.exports = {
   getById,
   getByName,
   getByEmail,
+  getDashboardDetails,
   getMultiple,
   create,
   update,

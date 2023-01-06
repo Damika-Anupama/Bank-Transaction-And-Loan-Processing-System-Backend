@@ -32,7 +32,8 @@ app.use((req, res, next) => {
     next();
     return;
   }
-  const token = req.rawHeaders[1].split(" ")[1];
+  // let token = req.rawHeaders[1].split(" ")[1];
+  let token = req.headers["authorization"].split(" ")[1];
   if (!token) {
     res.status(401).json({ message: "No token provided" }); 
     return;
