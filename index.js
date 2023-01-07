@@ -8,6 +8,7 @@ const fdRouter = require('./routes/fd.router');
 const branchRouter = require('./routes/branch.router');
 const jwt = require("jsonwebtoken");
 const cors = require('cors');
+const transactionRouter = require('./routes/transaction.router');
 
 app.use(cors());
 
@@ -50,6 +51,7 @@ app.use((req, res, next) => {
 
 // mount all routes on /api path
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/transaction", transactionRouter);
 app.use("/api/v1/branch", branchRouter);
 app.use("/api/v1/account", accountRouter);
 app.use("/api/v1/fd", fdRouter);

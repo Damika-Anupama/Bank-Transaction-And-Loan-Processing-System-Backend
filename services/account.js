@@ -10,12 +10,39 @@ async function getById(id) {
   return { data };
 }
 async function getByUserId(id) {
-  const result = await db.query(`SELECT * FROM account WHERE user_id=?`, [id]);
+  const result = await db.query(`
+  SELECT a.account_id, a.saving_type, b.branch_name, a.amount, a.account_type
+  FROM account a
+  INNER JOIN branch b ON a.branch_id = b.branch_id
+  WHERE user_id = ?`, [id]);
 
   const data = helper.emptyOrRows(result);
 
   return { data };
 }
+async function getTransactionTableData(id) {
+  const result = await db.query(
+    `
+    SELECT amount, transferd_time AS date, 'transfer' AS type,
+      IF(to_account = ?, 'up', 'down') AS status,
+      transfer_id AS data, sender_remarks
+    FROM transfer
+    WHERE to_account = ? OR from_account = ?
+    UNION
+    SELECT amount + withdrawal_fee AS amount, withdrawal_time AS date, 'withdrawal' AS type,
+      'down' AS status, withdrawal_id AS data, NULL AS sender_remarks
+    FROM withdrawal
+    WHERE account_id = ?
+    ORDER BY date DESC
+    `,
+    [id, id, id, id]
+  );
+
+  const data = helper.emptyOrRows(result);
+
+  return { data };
+}
+
 async function getMultiple(page = 1) {
   const offset = helper.getOffset(page, config.listPerPage);
   const rows = await db.query(
@@ -93,7 +120,8 @@ async function remove(id) {
 
 module.exports = {
   getById,
-  getByUserId,  
+  getByUserId,
+  getTransactionTableData,  
   getMultiple,
   create,
   update,

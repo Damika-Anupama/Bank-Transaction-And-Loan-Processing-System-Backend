@@ -128,6 +128,8 @@ CREATE TABLE `transfer` (
   `to_account` INT(10) NOT NULL,
   `transferd_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `transaction_fee` DECIMAL(4,2),
+  `sender_remarks` VARCHAR(30),
+  `beneficiary_remarks` VARCHAR(30),
   PRIMARY KEY (`transfer_id`),
   FOREIGN KEY (`from_account`) REFERENCES `account`(`account_id`) ON DELETE CASCADE,
   FOREIGN KEY (`to_account`) REFERENCES `account`(`account_id`) ON DELETE CASCADE
