@@ -12,7 +12,7 @@ CREATE TABLE `user` (
   `gender` ENUM('MALE','FEMALE','OTHER'),
   `dob` DATE,
   `address` VARCHAR(30),
-  `email` VARCHAR(30),
+  `email` VARCHAR(30) NOT NULL UNIQUE,
   `contact_no` VARCHAR(10),
   PRIMARY KEY (`user_id`)
 );
@@ -61,7 +61,6 @@ CREATE TABLE `saving_account` (
 
 CREATE TABLE `fixed_deposit` (
   `fd_id` INT(10) NOT NULL UNIQUE AUTO_INCREMENT,
-  `user_id` INT(10) NOT NULL,
   `saving_account_id` INT(10) NOT NULL,
   `duration` ENUM('6_MONTH','1_YEAR','3_YEARS'),
   `rate_per_annum` ENUM('13','14','15'),
@@ -69,7 +68,6 @@ CREATE TABLE `fixed_deposit` (
   `amount` DECIMAL(12,2),
   PRIMARY KEY (`fd_id`),
   FOREIGN KEY (`saving_account_id`) REFERENCES `saving_account`(`saving_account_id`) ON DELETE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`) ON DELETE CASCADE,
   CHECK (`amount` > 0)
 ) ENGINE=InnoDB AUTO_INCREMENT=20000 DEFAULT CHARSET=latin1;
 
@@ -216,12 +214,12 @@ INSERT INTO saving_account (account_id, saving_account_type, interest_rate, min_
 (1000014, 'ADULT', '10', '1000', 4),
 (1000016, 'SENIOR', '13', '1000', 2);
 
-INSERT INTO fixed_deposit (user_id, saving_account_id, duration, rate_per_annum, fd_opening_date, amount) VALUES 
-(2, 10013, '6_MONTH', '13', '2021-11-30 03:57:53', 7533534047.35),
-(1, 10009, '3_YEARS', '15', '2022-11-01 05:02:43', 9348869788.43),
-(4, 10005, '1_YEAR', '15', '2022-09-09 13:26:20', 2905433976.78),
-(19, 10009, '1_YEAR', '14', '2022-01-31 11:00:01', 7019514353.95),
-(4, 10001, '3_YEARS', '15', '2021-12-10 14:57:45', 6315881509.09);
+INSERT INTO fixed_deposit (saving_account_id, duration, rate_per_annum, fd_opening_date, amount) VALUES 
+(10013, '6_MONTH', '13', '2021-11-30 03:57:53', 7533534047.35),
+(10008, '3_YEARS', '15', '2022-11-01 05:02:43', 9348869788.43),
+(10005, '1_YEAR', '15', '2022-09-09 13:26:20', 2905433976.78),
+(10002, '1_YEAR', '14', '2022-01-31 11:00:01', 7019514353.95),
+(10001, '3_YEARS', '15', '2021-12-10 14:57:45', 6315881509.09);
 
 INSERT INTO loan_basic_detail (amount, customer_id, is_approved , starting_date, duration_days, interest, loan_type) VALUES 
 (42761793.52, 6, 1, '2022-10-26 17:49:02', 345, 16.05, 'BUSINESS'),

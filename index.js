@@ -4,6 +4,7 @@ const app = express();
 const port = process.env.API_PORT;
 const userRouter = require('./routes/user.router');
 const accountRouter = require('./routes/account.router');
+const loanRouter = require('./routes/loan.router');
 const fdRouter = require('./routes/fd.router');
 const branchRouter = require('./routes/branch.router');
 const jwt = require("jsonwebtoken");
@@ -52,9 +53,9 @@ app.use((req, res, next) => {
 // mount all routes on /api path
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/transaction", transactionRouter);
-app.use("/api/v1/branch", branchRouter);
-app.use("/api/v1/account", accountRouter);
 app.use("/api/v1/fd", fdRouter);
+app.use("/api/v1/branch", branchRouter);
+app.use("/api/v1/loan", loanRouter);
 // when no route is matched by now, it must be a 404 <- wildcard route
 app.use((req, res, next) => {
   res.status(404).json({ message: "Route not found" });

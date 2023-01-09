@@ -9,6 +9,15 @@ async function getById(id) {
 
   return { data };
 }
+async function getSavingAccountsByUserId(id) {
+
+  const result = await db.query(
+    "SELECT account_id, account_type, amount FROM account WHERE user_id = ? AND saving_type = 'SAVING'",
+    [id]
+    );
+
+  return { result };
+}
 async function getByUserId(id) {
   const result = await db.query(`
   SELECT a.account_id, a.saving_type, b.branch_name, a.amount, a.account_type
@@ -120,6 +129,7 @@ async function remove(id) {
 
 module.exports = {
   getById,
+  getSavingAccountsByUserId,
   getByUserId,
   getTransactionTableData,  
   getMultiple,

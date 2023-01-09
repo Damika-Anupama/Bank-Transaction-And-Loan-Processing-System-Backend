@@ -59,12 +59,12 @@ async function getMultiple(page = 1) {
 async function create(user) {
   // convert user.password to hash using bcrypt library
   const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(user.password, salt);
+  const password = await bcrypt.hash(user.password, salt);
   const result = await db.query(
     "INSERT INTO user (username, password, fullname, type, gender, dob, address, email, contact_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
     [
       user.username,
-      user.password,
+      password,
       user.fullname,
       user.type,
       user.gender,

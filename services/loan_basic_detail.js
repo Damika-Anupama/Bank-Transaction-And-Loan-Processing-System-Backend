@@ -9,6 +9,13 @@ async function getById(id) {
 
   return { data };
 }
+async function getByUserId(id) {
+  const result = await db.query(`SELECT * FROM loan_basic_detail WHERE customer_id=?`, [id]);
+
+  const data = helper.emptyOrRows(result);
+
+  return { data };
+}
 async function getMultiple(page = 1) {
   const offset = helper.getOffset(page, config.listPerPage);
   const rows = await db.query(
@@ -89,6 +96,7 @@ async function remove(id) {
 }
 
 module.exports = {
+  getByUserId,
   getById,
   getMultiple,
   create,
