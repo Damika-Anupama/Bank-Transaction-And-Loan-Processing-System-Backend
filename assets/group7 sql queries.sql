@@ -133,6 +133,44 @@ CREATE TABLE `transfer` (
   FOREIGN KEY (`to_account`) REFERENCES `account`(`account_id`) ON DELETE CASCADE
 );
 
+CREATE TABLE `loan_installment` (
+    'installment_id' INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    'loan_basic_detail_id' INT NOT NULL,
+    'installment_number' INT NOT NULL,
+    'due_date' DATE NOT NULL,
+    'amount' DECIMAL(10,2) NOT NULL,
+    'paid_date' DATE,
+    'late_fee' DECIMAL(10,2) NOT NULL,
+    status ENUM('unpaid', 'paid', 'late') NOT NULL,
+    FOREIGN KEY ('loan_basic_detail_id') REFERENCES 'loan_basic_detail'('loan_basic_detail_id')
+);
+
+INSERT INTO loan_installments (loan_basic_detail_id, installment_number, due_date, amount, paid_date, late_fee, status) VALUES 
+(1, 1, '2022-11-26', 106904.48, '2022-11-25', 0, 'paid'),
+(1, 2, '2022-12-26', 106904.48, NULL, 0, 'unpaid'),
+(1, 3, '2023-01-26', 106904.48, NULL, 0, 'unpaid'),
+(1, 4, '2023-02-26', 106904.48, NULL, 0, 'unpaid'),
+(2, 1, '2022-08-27', 320159.87, '2022-08-26', 0, 'paid'),
+(2, 2, '2022-09-27', 320159.87, NULL, 0, 'unpaid'),
+(2, 3, '2022-10-27', 320159.87, NULL, 0, 'unpaid'),
+(3, 1, '2022-07-19', 249740.99, '2022-07-20', 0, 'paid'),
+(3, 2, '2022-08-19', 249740.99, NULL, 0, 'unpaid'),
+(3, 3, '2022-09-19', 249740.99, NULL, 0, 'unpaid'),
+(3, 4, '2022-10-19', 249740.99, NULL, 0, 'unpaid'),
+(3, 5, '2022-11-19', 249740.99, NULL, 0, 'unpaid'),
+(3, 6, '2022-12-19', 249740.99, NULL, 0, 'unpaid'),
+(4, 1, '2022-01-29', 123980.13, '2022-01-28', 0, 'paid'),
+(4, 2, '2022-02-29', 123980.13, NULL, 0, 'unpaid'),
+(4, 3, '2022-03-29', 123980.13, NULL, 0, 'unpaid'),
+(5, 1, '2022-12-29', 1266321.65, '2022-12-30', 0, 'paid'),
+(5, 2, '2023-01-29', 1266321.65, NULL, 0, 'unpaid'),
+(5, 3, '2023-02-29', 1266321.65, NULL, 0, 'unpaid'),
+(5, 4, '2023-03-29', 1266321.65, NULL, 0, 'unpaid'),
+(6, 1, '2022-11-11', 501939.01, '2022-11-12', 0, 'paid'),
+(6, 2, '2022-12-11', 501939.01, NULL, 0, 'unpaid'),
+(6, 3, '2023-01-11', 501939.01, NULL, 0, 'unpaid');
+
+
 INSERT INTO user (username, password, fullname, type, gender, dob, address, email, contact_no) VALUES
 ("Damia", "12345678", "Damika Anupama", "CUSTOMER", "MALE", NOW(), "No.17, Train Road, Panaduwara", "damikaanupama@gmail.com", "0721436578"),
 ('agerlghyg0', 'Abigail', 'Abigail Gerling', 'ADMIN', 'MALE', '2022-11-09 13:55:03', '2031 Welch Pass', 'agerling0@intel.com', '2557996331'),
