@@ -33,7 +33,6 @@ CREATE TABLE `branch` (
   PRIMARY KEY (`branch_id`),
   FOREIGN KEY (`manager_id`) REFERENCES `manager`(`manager_id`) ON DELETE CASCADE
 );
-make one to one relationship between account and saving_account and give me code
 CREATE TABLE `account` (
   `account_id` INT(10) NOT NULL UNIQUE auto_increment,
   `user_id` INT(10) NOT NULL,
@@ -118,7 +117,6 @@ CREATE TABLE `normal_loan` (
   FOREIGN KEY (`employee_id`) REFERENCES `employee`(`employee_id`) ON DELETE CASCADE,
   FOREIGN KEY (`loan_detail_id`) REFERENCES `loan_basic_detail`(`loan_basic_detail_id`) ON DELETE CASCADE
 );
-
 CREATE TABLE `transfer` (
   `transfer_id` INT(10) NOT NULL UNIQUE AUTO_INCREMENT,
   `amount` DECIMAL(12,2) NOT NULL,
@@ -126,53 +124,30 @@ CREATE TABLE `transfer` (
   `to_account` INT(10) NOT NULL,
   `transferd_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `transaction_fee` DECIMAL(4,2),
-  `sender_remarks` VARCHAR(30),
-  `beneficiary_remarks` VARCHAR(30),
+  `sender_remarks` VARCHAR(100),
+  `beneficiary_remarks` VARCHAR(100),
   PRIMARY KEY (`transfer_id`),
   FOREIGN KEY (`from_account`) REFERENCES `account`(`account_id`) ON DELETE CASCADE,
   FOREIGN KEY (`to_account`) REFERENCES `account`(`account_id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `loan_installment` (
-    'installment_id' INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    'loan_basic_detail_id' INT NOT NULL,
-    'installment_number' INT NOT NULL,
-    'due_date' DATE NOT NULL,
-    'amount' DECIMAL(10,2) NOT NULL,
-    'paid_date' DATE,
-    'late_fee' DECIMAL(10,2) NOT NULL,
+    `installment_id` INT(10) NOT NULL AUTO_INCREMENT,
+    `loan_basic_detail_id` INT,
+    `installment_number` INT NOT NULL,
+    `due_date` DATE NOT NULL,
+    `amount` DECIMAL(10,2) NOT NULL,
+    `paid_date` DATE,
+    `late_fee` DECIMAL(10,2) NOT NULL,
     status ENUM('unpaid', 'paid', 'late') NOT NULL,
-    FOREIGN KEY ('loan_basic_detail_id') REFERENCES 'loan_basic_detail'('loan_basic_detail_id')
+    PRIMARY KEY (`installment_id`),
+    FOREIGN KEY (`loan_basic_detail_id`) REFERENCES `loan_basic_detail`(`loan_basic_detail_id`) ON DELETE CASCADE
 );
 
-INSERT INTO loan_installments (loan_basic_detail_id, installment_number, due_date, amount, paid_date, late_fee, status) VALUES 
-(1, 1, '2022-11-26', 106904.48, '2022-11-25', 0, 'paid'),
-(1, 2, '2022-12-26', 106904.48, NULL, 0, 'unpaid'),
-(1, 3, '2023-01-26', 106904.48, NULL, 0, 'unpaid'),
-(1, 4, '2023-02-26', 106904.48, NULL, 0, 'unpaid'),
-(2, 1, '2022-08-27', 320159.87, '2022-08-26', 0, 'paid'),
-(2, 2, '2022-09-27', 320159.87, NULL, 0, 'unpaid'),
-(2, 3, '2022-10-27', 320159.87, NULL, 0, 'unpaid'),
-(3, 1, '2022-07-19', 249740.99, '2022-07-20', 0, 'paid'),
-(3, 2, '2022-08-19', 249740.99, NULL, 0, 'unpaid'),
-(3, 3, '2022-09-19', 249740.99, NULL, 0, 'unpaid'),
-(3, 4, '2022-10-19', 249740.99, NULL, 0, 'unpaid'),
-(3, 5, '2022-11-19', 249740.99, NULL, 0, 'unpaid'),
-(3, 6, '2022-12-19', 249740.99, NULL, 0, 'unpaid'),
-(4, 1, '2022-01-29', 123980.13, '2022-01-28', 0, 'paid'),
-(4, 2, '2022-02-29', 123980.13, NULL, 0, 'unpaid'),
-(4, 3, '2022-03-29', 123980.13, NULL, 0, 'unpaid'),
-(5, 1, '2022-12-29', 1266321.65, '2022-12-30', 0, 'paid'),
-(5, 2, '2023-01-29', 1266321.65, NULL, 0, 'unpaid'),
-(5, 3, '2023-02-29', 1266321.65, NULL, 0, 'unpaid'),
-(5, 4, '2023-03-29', 1266321.65, NULL, 0, 'unpaid'),
-(6, 1, '2022-11-11', 501939.01, '2022-11-12', 0, 'paid'),
-(6, 2, '2022-12-11', 501939.01, NULL, 0, 'unpaid'),
-(6, 3, '2023-01-11', 501939.01, NULL, 0, 'unpaid');
 
 
 INSERT INTO user (username, password, fullname, type, gender, dob, address, email, contact_no) VALUES
-("Damia", "12345678", "Damika Anupama", "CUSTOMER", "MALE", NOW(), "No.17, Train Road, Panaduwara", "damikaanupama@gmail.com", "0721436578"),
+("Damia", "$2b$10$UBJKoR/jDtcYmmk4FpvgTuDVThJS/Luh3U5WANxFz2dIC./CzbnXy", "Damika Anupama", "CUSTOMER", "MALE", NOW(), "No.17, Train Road, Panaduwara", "damikaanupama@gmail.com", "0721436578"),
 ('agerlghyg0', 'Abigail', 'Abigail Gerling', 'ADMIN', 'MALE', '2022-11-09 13:55:03', '2031 Welch Pass', 'agerling0@intel.com', '2557996331'),
 ('bbackman1', 'Bartolemo', 'Bartolemo Backman', 'MANAGER', 'OTHER', '2022-11-27 01:17:35', '1039 Northfield Lane', 'bbackman1@icq.com', '1516546427'),
 ('agalway2', 'Alyce', 'Alyce Galway', 'EMPLOYEE', 'OTHER', '2022-11-24 21:40:02', '9937 Green Ridge Alley', 'agalway2@intel.com', '1619268157'),
@@ -192,11 +167,12 @@ INSERT INTO user (username, password, fullname, type, gender, dob, address, emai
 ('lwhellamsg', 'Lee', 'Lee Whellams', 'MANAGER', 'OTHER', '2022-11-10 16:16:11', '859 Mcbride Road', 'lwhellamsg@nsw.gov.au', '9493185550'),
 ('kgrenvilleh', 'Kathy', 'Kathy Grenville', 'CUSTOMER', 'OTHER', '2022-11-14 04:55:00', '64481 Autumn Leaf Point', 'kgrenvilleh@washington.edu', '4865476351'),
 ('jkesoni', 'Jewelle', 'Jewelle Keson', 'CUSTOMER', 'MALE', '2022-11-15 03:57:01', '07 Messerschmidt Drive', 'jkesoni@alexa.com', '7053248157'),
-('rdaltonj', 'Rik', 'Rik Dalton', 'EMPLOYEE', 'OTHER', '2022-11-08 11:25:10', '3 Drewry Plaza', 'rdaltonj@altervista.org', '3098691551'),
+('rdaltonj', 'Rik', 'Rik Dalton', 'EMPLOYEE', 'OTHER', '2022-11-08 11:25:10', '3 Drewry Plaza', 'rdaltsonj@altervista.org', '3098691551'),
 ('rdaltonj33', 'Rikan', 'Rik Dalton', 'EMPLOYEE', 'OTHER', '2022-11-08 11:25:10', '3 Drewry Plaza', 'rdaltonj@altervista.org', '3098691551'),
 ('dfdlossi', 'Floski', 'Flossi Dalton', 'MANAGER', 'MALE', '2022-12-04 21:22:11', '3 Shelley Plaza', 'dfkjdfns@skdfjfsndfos.org', '6238623784'),
 ('dsfdsfs890', 'SDFDSF09', 'Rik Tobye', 'MANAGER', 'FEMALE', '2022-11-08 11:25:10', '3 Cook Plaza', 'mashable@altervista.org', '7895672930');
-
+("Nimal", "$2b$10$xuK9qytY0RvQbD2rfVwbF.ZH/TAxWN4RxMr9DjqKzSWrifABVxYjW", "Damika Anupama", "EMPLOYEE", "MALE", NOW(), "No.17, Train Road, Panaduwara", "nimalnimal@gmail.com", "0721436578"),
+("Bimal", "$2b$10$3ASS/8wUrikyDDpLlpvWHuEZc5k0nfgmpmwRySq6DRAbPwbOvgRvu", "Damika Anupama", "MANAGER", "MALE", NOW(), "No.17, Train Road, Panaduwara", "bimalbimal@gmail.com", "0721436578");
 INSERT INTO manager(user_id) VALUES(3),(9),(20),(23),(24);
 
 INSERT INTO branch (branch_name, branch_type, address, manager_id) VALUES 
@@ -252,13 +228,21 @@ INSERT INTO saving_account (account_id, saving_account_type, interest_rate, min_
 (1000014, 'ADULT', '10', '1000', 4),
 (1000016, 'SENIOR', '13', '1000', 2);
 
+UPDATE account 
+SET saving_type = 'SAVING'
+WHERE account_id IN (SELECT account_id FROM saving_account);
+
+UPDATE account 
+SET saving_type = 'CURRENT'
+WHERE account_id NOT IN (SELECT account_id FROM saving_account);
+
+
 INSERT INTO fixed_deposit (saving_account_id, duration, rate_per_annum, fd_opening_date, amount) VALUES 
 (10013, '6_MONTH', '13', '2021-11-30 03:57:53', 7533534047.35),
 (10008, '3_YEARS', '15', '2022-11-01 05:02:43', 9348869788.43),
 (10005, '1_YEAR', '15', '2022-09-09 13:26:20', 2905433976.78),
 (10002, '1_YEAR', '14', '2022-01-31 11:00:01', 7019514353.95),
 (10001, '3_YEARS', '15', '2021-12-10 14:57:45', 6315881509.09);
-
 INSERT INTO loan_basic_detail (amount, customer_id, is_approved , starting_date, duration_days, interest, loan_type) VALUES 
 (42761793.52, 6, 1, '2022-10-26 17:49:02', 345, 16.05, 'BUSINESS'),
 (36247929.4, 11, 1, '2022-07-27 18:30:03', 113, 16.58, 'PERSONAL'),
@@ -314,88 +298,74 @@ INSERT INTO normal_loan (loan_detail_id, employee_id) VALUES
 (100007,5),
 (100008,6),
 (100009,1);
+INSERT INTO transfer (amount, from_account, to_account, transferd_time, transaction_fee, sender_remarks, beneficiary_remarks) VALUES 
+(96737679.09, 1000007, 1000027, '2022-11-01 09:16:43', 0, 'Transfer for business expenses', 'Funds received for expansion'),
+(43223883.21, 1000004, 1000021, '2022-11-24 08:35:53', 19.31, 'Payment for goods', 'Invoice payment received'),
+(21276393.06, 1000027, 1000024, '2022-11-22 15:02:30', 78.25, 'Loan repayment', 'Loan repayment received'),
+(80509918.29, 1000008, 1000014, '2022-11-06 17:29:18', 95.85, 'Salary transfer', 'Salary credited'),
+(58512729.6, 1000004, 1000001, '2022-11-08 09:05:36', 0, 'Transfer to savings account', 'Funds transferred to savings account'),
+(34216468.07, 1000007, 1000018, '2022-11-01 01:26:18', 81.75, 'Personal transfer', 'Personal funds transferred'),
+(14051826.0, 1000009, 1000021, '2022-11-27 19:30:39', 32.92, 'Investment transfer', 'Investment funds transferred'),
+(79944321.2, 1000015, 1000014, '2022-11-04 02:51:25', 0, 'Refund transfer', 'Refund transferred'),
+(92501325.7, 1000015, 1000026, '2022-11-06 16:38:13', 31.63, 'Gift transfer', 'Gift funds transferred'),
+(93016296.19, 1000023, 1000026, '2022-11-05 15:29:52', 0, 'Transfer for property purchase', 'Funds transferred for property purchase'),
+(90991533.01, 1000011, 1000003, '2022-11-30 01:55:51', 60.96, 'Transfer for expenses', 'Funds transferred for expenses'),
+(39580043.92, 1000005, 1000000, '2022-11-16 11:49:02', 0, 'Transfer for debts', 'Funds transferred to clear debts'),
+(17156877.0, 1000029, 1000028, '2022-11-19 06:29:29', 0, 'Transfer for insurance', 'Funds transferred for insurance'),
+(32276037.37, 1000020, 1000006, '2022-11-22 12:15:44', 58.21, 'Transfer for college fees', 'College fees transferred'),
+(83920472.64, 1000015, 1000009, '2022-11-16 23:01:32', 5.1, 'Transfer for rent', 'Rent transferred'),
+(75829779.39, 1000014, 1000024, '2022-11-18 00:38:26', 11.97, 'Transfer for bills', 'Bills paid'),
+(48302633.63, 1000004, 1000024, '2022-11-12 01:11:38', 4.48, 'Transfer for groceries', 'Groceries paid'),
+(96082561.91, 1000021, 1000022, '2022-11-22 19:17:17', 0, 'Transfer for travel', 'Travel funds transferred'),
+(99099241.49, 1000012, 1000017, '2022-12-04 05:22:36', 96.27, 'Transfer for equipment', 'Equipment purchased'),
+(39001924.74, 1000006, 1000008, '2022-11-17 23:32:17', 0, 'Transfer for medical expenses', 'Medical expenses paid'),
+(85234772.57, 1000029, 1000004, '2022-12-02 22:54:12', 8.49, 'Transfer for tuition', 'Tuition fees paid'),
+(67890132.12, 1000023, 1000011, '2022-11-29 13:21:49', 0, 'Transfer for taxes', 'Taxes paid'),
+(76583918.94, 1000005, 1000007, '2022-12-05 04:48:32', 16.34, 'Transfer for insurance', 'Insurance premiums paid'),
+(34921568.79, 1000020, 1000019, '2022-12-01 14:15:43', 0, 'Transfer for car purchase', 'Car purchased'),
+(13582977.39, 1000001, 1000008, '2022-11-28 09:38:26', 0, 'Transfer for home renovation', 'Home renovation funds transferred'),
+(81789012.62, 1000022, 1000010, '2022-12-04 20:31:49', 31.1, 'Transfer for business expenses', 'Business expenses paid'),
+(92767891.94, 1000028, 1000025, '2022-12-03 16:48:32', 0, 'Transfer for vacation', 'Vacation funds transferred'),
+(57349215.79, 1000009, 1000027, '2022-12-02 10:15:43', 19.56, 'Transfer for legal expenses', 'Legal expenses paid');
 
-INSERT INTO transfer (amount, from_account, to_account, transferd_time, transaction_fee) VALUES 
-(96737679.09, 1000007, 1000027, '2022-11-01 09:16:43', 0),
-(43223883.21, 1000004, 1000021, '2022-11-24 08:35:53', 19.31),
-(21276393.06, 1000027, 1000024, '2022-11-22 15:02:30', 78.25),
-(80509918.29, 1000008, 1000014, '2022-11-06 17:29:18', 95.85),
-(58512729.6, 1000004, 1000001, '2022-11-08 09:05:36', 0),
-(34216468.07, 1000007, 1000018, '2022-11-01 01:26:18', 81.75),
-(14051826.0, 1000009, 1000021, '2022-11-27 19:30:39', 32.92),
-(79944321.2, 1000015, 1000014, '2022-11-04 02:51:25', 0),
-(92501325.7, 1000015, 1000026, '2022-11-06 16:38:13', 31.63),
-(93016296.19, 1000023, 1000026, '2022-11-05 15:29:52', 0),
-(90991533.01, 1000011, 1000003, '2022-11-30 01:55:51', 60.96),
-(39580043.92, 1000005, 1000000, '2022-11-16 11:49:02', 0),
-(17156877.0, 1000029, 1000028, '2022-11-19 06:29:29', 0),
-(32276037.37, 1000020, 1000006, '2022-11-22 12:15:44', 58.21),
-(83920472.64, 1000015, 1000009, '2022-11-16 23:01:32', 5.1),
-(75829779.39, 1000014, 1000024, '2022-11-18 00:38:26', 11.97),
-(48302633.63, 1000004, 1000024, '2022-11-12 01:11:38', 4.48),
-(96082561.91, 1000021, 1000022, '2022-11-22 19:17:17', 0),
-(99099241.49, 1000012, 1000017, '2022-12-04 05:22:36', 96.27),
-(39001924.74, 1000006, 1000008, '2022-11-17 23:32:17', 0);
-
-
-/* iterate over all rows in the account table and 
-update the saving_type column value to SAVING 
-if the account table's account_id column value 
-equals one of the values from the saving_account table account_id column, 
-and to CURRENT for all other rows */
-UPDATE account
-SET saving_type = CASE
-    WHEN account_id IN (SELECT account_id FROM saving_account) THEN 'SAVING'
-    ELSE 'CURRENT'
-END;
-
-/* 
-Write a mysql function gives user_id, username and type from the user table when the email is given. 
-using the user_id give all account details as an array such as account_id, branch_id, account_type, amount, saving_type from account table. 
-for each account array item include branch_name using branch_id from the branch table instead of branch_id
-Finally compose the whole object */
-DELIMITER $$
-CREATE FUNCTION get_user_details(email VARCHAR(255))
-RETURNS JSON DETERMINISTIC
-BEGIN
-    DECLARE user_id INT;
-    DECLARE username VARCHAR(255);
-    DECLARE type VARCHAR(255);
-    DECLARE account_id INT;
-    DECLARE branch_id INT;
-    DECLARE account_type VARCHAR(255);
-    DECLARE amount DECIMAL(20,2);
-    DECLARE saving_type VARCHAR(255);
-    DECLARE branch_name VARCHAR(255);
-    DECLARE account_array JSON;
-    DECLARE user_details JSON;
-    DECLARE done INT DEFAULT FALSE;
-    DECLARE cur1 CURSOR FOR SELECT user_id, username, type FROM user WHERE email = email;
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-    OPEN cur1;
-    read_loop: LOOP
-        FETCH cur1 INTO user_id, username, type;
-        IF done THEN
-            LEAVE read_loop;
-        END IF;
-        SET account_array = JSON_ARRAY();
-        SET user_details = JSON_OBJECT('user_id', user_id, 'username', username, 'type', type, 'accounts', account_array);
-        SET done = FALSE;
-        DECLARE cur2 CURSOR FOR SELECT account_id, branch_id, account_type, amount, saving_type FROM account WHERE user_id = user_id;
-        DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-        OPEN cur2;
-        read_loop2: LOOP
-            FETCH cur2 INTO account_id, branch_id, account_type, amount, saving_type;
-            IF done THEN
-                LEAVE read_loop2;
-            END IF;
-            SET branch_name = (SELECT branch_name FROM branch WHERE branch_id = branch_id);
-            SET account_array = JSON_ARRAY_APPEND(account_array, '$', JSON_OBJECT('account_id', account_id, 'branch_id', branch_id, 'account_type', account_type, 'amount', amount, 'saving_type', saving_type, 'branch_name', branch_name));
-        END LOOP read_loop2;
-        CLOSE cur2;
-        SET user_details = JSON_SET(user_details, '$.accounts', account_array);
-        SELECT user_details;
-    END LOOP read_loop;
-    CLOSE cur1;
-END$$
+INSERT INTO loan_installment (loan_basic_detail_id, installment_number, due_date, amount, paid_date, late_fee, status) VALUES 
+(100000, 1, '2022-11-26', 106904.48, '2022-11-25', 0, 'paid'),
+(100000, 2, '2022-12-26', 106904.48, NULL, 0, 'unpaid'),
+(100000, 3, '2023-01-26', 106904.48, NULL, 0, 'unpaid'),
+(100000, 4, '2023-02-26', 106904.48, NULL, 0, 'unpaid'),
+(100001, 1, '2022-08-27', 320159.87, '2022-08-26', 0, 'paid'),
+(100001, 2, '2022-09-27', 320159.87, NULL, 0, 'unpaid'),
+(100001, 3, '2022-10-27', 320159.87, NULL, 0, 'unpaid'),
+(100002, 1, '2022-07-19', 249740.99, '2022-07-20', 0, 'paid'),
+(100002, 2, '2022-08-19', 249740.99, NULL, 0, 'unpaid'),
+(100002, 3, '2022-09-19', 249740.99, NULL, 0, 'unpaid'),
+(100002, 4, '2022-10-19', 249740.99, NULL, 0, 'unpaid'),
+(100002, 5, '2022-11-19', 249740.99, NULL, 0, 'unpaid'),
+(100002, 6, '2022-12-19', 249740.99, NULL, 0, 'unpaid'),
+(100003, 1, '2022-01-29', 123980.13, '2022-01-28', 0, 'paid'),
+(100003, 2, '2022-02-28', 123980.13, NULL, 0, 'unpaid'),
+(100003, 3, '2022-03-29', 123980.13, NULL, 0, 'unpaid'),
+(100004, 1, '2022-12-29', 1266321.65, '2022-12-30', 0, 'paid'),
+(100004, 2, '2023-01-29', 1266321.65, NULL, 0, 'unpaid'),
+(100004, 3, '2023-02-28', 1266321.65, NULL, 0, 'unpaid'),
+(100004, 4, '2023-03-29', 1266321.65, NULL, 0, 'unpaid'),
+(100005, 1, '2022-11-11', 501939.01, '2022-11-12', 0, 'paid'),
+(100005, 2, '2022-12-11', 501939.01, NULL, 0, 'unpaid'),
+(100005, 3, '2023-01-11', 501939.01, NULL, 0, 'unpaid'),
+(100006, 1, '2022-12-15', 785463.32, '2022-12-16', 0, 'paid'),
+(100006, 2, '2023-01-15', 785463.32, NULL, 0, 'unpaid'),
+(100006, 3, '2023-02-15', 785463.32, NULL, 0, 'unpaid'),
+(100007, 1, '2022-11-28', 654278.21, '2022-11-29', 0, 'paid'),
+(100007, 2, '2022-12-28', 654278.21, NULL, 0, 'unpaid'),
+(100007, 3, '2023-01-28', 654278.21, NULL, 0, 'unpaid'),
+(100007, 4, '2023-02-28', 654278.21, NULL, 0, 'unpaid'),
+(100007, 5, '2023-03-28', 654278.21, NULL, 0, 'unpaid'),
+(100008, 1, '2022-12-08', 932341.64, '2022-12-09', 0, 'paid'),
+(100008, 2, '2023-01-08', 932341.64, NULL, 0, 'unpaid'),
+(100008, 3, '2023-02-08', 932341.64, NULL, 0, 'unpaid'),
+(100009, 1, '2022-11-19', 1205984.99, '2022-11-20', 0, 'paid'),
+(100009, 2, '2022-12-19', 1205984.99, NULL, 0, 'unpaid'),
+(100009, 3, '2023-01-19', 1205984.99, NULL, 0, 'unpaid'),
+(100009, 4, '2023-02-19', 1205984.99, NULL, 0, 'unpaid'),
+(100009, 5, '2023-03-19', 1205984.99, NULL, 0, 'unpaid');
 

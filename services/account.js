@@ -12,7 +12,7 @@ async function getById(id) {
 async function getSavingAccountsByUserId(id) {
 
   const result = await db.query(
-    "SELECT account_id, account_type, amount FROM account WHERE user_id = ? AND saving_type = 'SAVING'",
+    "SELECT s.saving_account_id, a.account_type, a.amount FROM account as a inner join saving_account as s WHERE a.account_id = s.account_id AND a.user_id = ? AND a.saving_type = 'SAVING'",
     [id]
     );
 

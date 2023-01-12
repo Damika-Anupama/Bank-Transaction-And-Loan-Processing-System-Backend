@@ -30,26 +30,31 @@ async function getMultiple(page = 1) {
   };
 }
 async function create(loan_basic_detail) {
+  let loan_basic_detail_id = '';
   const result = await db.query(
-    "INSERT INTO loan_basic_detail (amount, customer_id, is_approved, start_date, duration_days, interest, loan_type) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO loan_basic_detail (amount, customer_id, is_approved, starting_date, duration_days, interest, loan_type) VALUES (?, ?, ?, ?, ?, ?, ?)",
     [
       loan_basic_detail.amount,
       loan_basic_detail.customer_id,
       loan_basic_detail.is_approved,
-      loan_basic_detail.start_date,
+      loan_basic_detail.starting_date,
       loan_basic_detail.duration_days,
       loan_basic_detail.interest,
       loan_basic_detail.loan_type
-    ]
-  );
+    ],
+    function (error, results, fields) {
+      if (error) throw error;
+    }
+    );
 
   let message = "Error in creating the loan_basic_detail!";
-
+  
   if (result.affectedRows) {
+    loan_basic_detail_id = result.insertId;
     message = "loan_basic_detail created successfully!";
   }
 
-  return { message };
+  return { message, loan_basic_detail_id };
 }
 
 async function update(id, loan_basic_detail) {

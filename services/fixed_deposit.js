@@ -40,7 +40,7 @@ async function getMultiple(page = 1) {
 async function create(fixed_deposit) {
   console.log(fixed_deposit);
   const result = await db.query(
-    "INSERT INTO fixed_deposit (saving_account_id, duration, rate_per_annum, fd_opening_date, amount) VALUES (?, ?, ?, ?, ?, ?)",
+    "INSERT INTO fixed_deposit (saving_account_id, duration, rate_per_annum, fd_opening_date, amount) VALUES (?, ?, ?, ?, ?)",
     [
       fixed_deposit.saving_account_id,
       fixed_deposit.duration,
