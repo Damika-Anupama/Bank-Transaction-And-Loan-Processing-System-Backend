@@ -18,4 +18,15 @@ router.post("/", async function (req, res, next) {
   }
 });
 
+router.get('/home', async function(req, res, next) {
+    try {
+      res.json(await user.getCustomerDetails());
+    } catch (err) {
+      console.error(`Error while getting branch `, err.message);
+      // send error response if there was a problem
+      res.status(500).json({ message: error.message });
+      next(err);
+    }
+  });
+
 module.exports = router;
