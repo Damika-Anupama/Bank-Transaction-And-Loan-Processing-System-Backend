@@ -7,6 +7,8 @@ const accountRouter = require('./routes/account.router');
 const loanRouter = require('./routes/loan.router');
 const fdRouter = require('./routes/fd.router');
 const branchRouter = require('./routes/branch.router');
+const managerRouter = require('./routes/manager.router');
+const employeeRouter = require('./routes/employee.router');
 const jwt = require("jsonwebtoken");
 const cors = require('cors');
 const transactionRouter = require('./routes/transaction.router');
@@ -56,6 +58,8 @@ app.use("/api/v1/transaction", transactionRouter);
 app.use("/api/v1/fd", fdRouter);
 app.use("/api/v1/branch", branchRouter);
 app.use("/api/v1/loan", loanRouter);
+app.use("/api/v1/manager", managerRouter);
+app.use("/api/v1/employee", employeeRouter);
 // when no route is matched by now, it must be a 404 <- wildcard route
 app.use((req, res, next) => {
   res.status(404).json({ message: "Route not found" });

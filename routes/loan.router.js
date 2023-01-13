@@ -14,6 +14,17 @@ router.get('/user/:id', async function(req, res, next) {
   }
 });
 
+router.get('/unapproved-loans', async function(req, res, next) {
+  try {
+    res.json(await loan_basic_detail.getUnapprovedLoans());
+  } catch (err) {
+    console.error(`Error while getting branch `, err.message);
+    // send error response if there was a problem
+    res.status(500).json({ message: error.message });
+    next(err);
+  }
+});
+
 router.post('/online', async function(req, res, next) {
   try {
     req.body['starting_date'] = new Date();

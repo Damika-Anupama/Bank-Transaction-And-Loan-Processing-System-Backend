@@ -57,7 +57,7 @@ async function getMultiple(page = 1) {
   };
 }
 async function create(user) {
-  // convert user.password to hash using bcrypt library
+  let userId = 0;
   const salt = await bcrypt.genSalt(10);
   const password = await bcrypt.hash(user.password, salt);
   const result = await db.query(
@@ -78,10 +78,11 @@ async function create(user) {
   let message = "Error in creating the user!";
 
   if (result.affectedRows) {
+    userId = result.insertId;
     message = "user created successfully!";
   }
 
-  return { message };
+  return { message, userId };
 }
 
 async function update(id, user) {

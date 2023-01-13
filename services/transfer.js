@@ -11,6 +11,53 @@ async function getById(id) {
 
   return { data };
 }
+async function getTotalTransactions(branch_id) {
+  const sql = `
+    SELECT t.*,
+        CASE 
+            WHEN a1.branch_id = ? AND a2.branch_id = ? THEN 'no-change'
+            WHEN a1.branch_id = ? THEN 'up'
+            WHEN a2.branch_id = ? THEN 'down'
+            ELSE 'NA' 
+        END as direction
+    FROM transfer t
+    JOIN account a1 ON t.from_account = a1.account_id
+    JOIN account a2 ON t.to_account = a2.account_id
+    WHERE a1.branch_id = ? OR a2.branch_id = ?;
+`;
+  const result = await db.query(sql, [
+    branch_id,
+    branch_id,
+    branch_id,
+    branch_id,
+    branch_id,
+    branch_id,
+  ]);
+
+  return { result };
+}
+
+async function getTotalWithdrawals(branch_id) {
+  const sql = `
+    SELECT w.* 
+    FROM withdrawal w
+    JOIN account a ON w.account_id = a.account_id
+    WHERE a.branch_id = ?
+    `;
+  const result = await db.query(sql, [branch_id]);
+
+  return result;
+}
+async function getLateLoans() {
+  const sql = `
+    SELECT * 
+    FROM loan_installment 
+    WHERE status = 'unpaid'
+  `;
+  const result = await db.query(sql);
+
+  return result;
+}
 async function getMultiple(page = 1) {
   const offset = helper.getOffset(page, config.listPerPage);
   const rows = await db.query(
@@ -39,13 +86,13 @@ async function transferFunds(transfer) {
         transfer.beneficiary_remarks,
       ]
     );
-  
+
     // update the from_account amount in the account table
     await db.query(
       "UPDATE account SET amount = amount - ? WHERE account_id = ?",
       [transfer.amount, transfer.from_account]
     );
-  
+
     // update the to_account amount in the account table
     await db.query(
       "UPDATE account SET amount = amount + ? WHERE account_id = ?",
@@ -59,17 +106,17 @@ async function transferFunds(transfer) {
 }
 
 async function create(transfer) {
-    const result = await db.query(
-      "INSERT INTO transfer (amount, from_account, to_account, transaction_fee, sender_remarks, beneficiary_remarks) VALUES (?, ?, ?, ? ,? ,?)",
-      [
-        transfer.amount,
-        transfer.from_account,
-        transfer.to_account,
-        0,
-        transfer.sender_remarks,
-        transfer.beneficiary_remarks,
-      ]
-    );
+  const result = await db.query(
+    "INSERT INTO transfer (amount, from_account, to_account, transaction_fee, sender_remarks, beneficiary_remarks) VALUES (?, ?, ?, ? ,? ,?)",
+    [
+      transfer.amount,
+      transfer.from_account,
+      transfer.to_account,
+      0,
+      transfer.sender_remarks,
+      transfer.beneficiary_remarks,
+    ]
+  );
 
   let message = "Error in creating the transfer!";
 
@@ -123,6 +170,9 @@ async function remove(id) {
 }
 
 module.exports = {
+  getTotalTransactions,
+  getTotalWithdrawals,
+  getLateLoans,
   getById,
   getMultiple,
   transferFunds,

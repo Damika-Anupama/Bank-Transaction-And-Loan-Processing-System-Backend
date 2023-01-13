@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const users = require('../services/manager');
+const transfer = require('../services/transfer');
 
 /* GET user by id */
 router.get('/:id', async function(req, res, next) {
@@ -28,6 +29,48 @@ router.get('/name/:name', async function(req, res, next) {
 router.get('/email/:email', async function(req, res, next) {
   try {
     res.json(await users.getByEmail(req.params.email));
+  } catch (err) {
+    console.error(`Error while getting user's email`, err.message);
+    // send error response if there was a problem
+    res.status(500).json({ message: error.message });
+    next(err);
+  }
+});
+
+router.get('/dashboard-blocks/:email', async function(req, res, next) {
+  try {
+    res.json(await users.getManagerDashboardDetailsByEmail(req.params.email));
+  } catch (err) {
+    console.error(`Error while getting manager's email`, err.message);
+    // send error response if there was a problem
+    res.status(500).json({ message: error.message });
+    next(err);
+  }
+});
+
+router.get('/total-transactions/:branch_id', async function(req, res, next) {
+  try {
+    res.json(await transfer.getTotalTransactions(req.params.branch_id));
+  } catch (err) {
+    console.error(`Error while getting user's email`, err.message);
+    // send error response if there was a problem
+    res.status(500).json({ message: error.message });
+    next(err);
+  }
+});
+router.get('/total-withdrawals/:branch_id', async function(req, res, next) {
+  try {
+    res.json(await transfer.getTotalWithdrawals(req.params.branch_id));
+  } catch (err) {
+    console.error(`Error while getting user's email`, err.message);
+    // send error response if there was a problem
+    res.status(500).json({ message: error.message });
+    next(err);
+  }
+});
+router.get('/late-loans/:branch_id', async function(req, res, next) {
+  try {
+    res.json(await transfer.getLateLoans());
   } catch (err) {
     console.error(`Error while getting user's email`, err.message);
     // send error response if there was a problem

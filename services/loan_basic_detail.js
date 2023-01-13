@@ -16,6 +16,16 @@ async function getByUserId(id) {
 
   return { data };
 }
+async function getUnapprovedLoans() {
+  const rows = await db.query(
+    `SELECT * FROM loan_basic_detail where is_approved = 0`
+  );
+  const data = helper.emptyOrRows(rows);
+
+  return {
+    data
+  };
+}
 async function getMultiple(page = 1) {
   const offset = helper.getOffset(page, config.listPerPage);
   const rows = await db.query(
@@ -103,6 +113,7 @@ async function remove(id) {
 module.exports = {
   getByUserId,
   getById,
+  getUnapprovedLoans,
   getMultiple,
   create,
   update,

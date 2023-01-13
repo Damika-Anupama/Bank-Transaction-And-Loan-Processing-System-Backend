@@ -11,6 +11,23 @@ async function getById(id) {
 
   return { data };
 }
+async function getManagerDashboardDetailsByEmail(email) {
+  const sql = `
+  SELECT u.user_id, m.manager_id, b.branch_name, b.branch_id,
+      (SELECT COUNT(*) FROM employee WHERE branch_id = b.branch_id) as num_employees,
+      (SELECT COUNT(*) FROM account WHERE branch_id = b.branch_id) as num_accounts
+  FROM user u
+  JOIN manager m ON u.user_id = m.user_id
+  JOIN branch b ON m.manager_id = b.manager_id
+  WHERE u.email = ?;
+`;
+const result = await db.query(sql, [email]);
+
+
+  const data = helper.emptyOrRows(result);
+
+  return { data };
+}
 async function getMultiple(page = 1) {
   const offset = helper.getOffset(page, config.listPerPage);
   const rows = await db.query(
@@ -53,6 +70,7 @@ async function remove(id) {
 
 module.exports = {
   getById,
+  getManagerDashboardDetailsByEmail,
   getMultiple,
   create,
   remove,
