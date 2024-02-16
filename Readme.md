@@ -134,7 +134,10 @@ This is the main group project given by the Computer Science Department, Univers
 ## Usage
 
 You can use this backend as a custom bank management system backend.
-
+This project uses mysql database. If you've already installed mysql, you can use it. You should change username and password in config.js file. I've included custom data in assets/Data folder that you can import to your database. These are the custom accounts in frontend to login using those data:
+- Customer: email = damikaanupama@gmail.com, password = 1234
+- Employee: email = nimalnimal@gmail.com, password = 4567
+- Manager: email = jkesoni@alexa.com, password = Jewelle
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
