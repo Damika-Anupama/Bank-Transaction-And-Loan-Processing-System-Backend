@@ -6,7 +6,7 @@ const config = {
       database: process.env.DB_NAME || "bank",
       port: process.env.DB_PORT || 3306,
       ssl: process.env.DB_SSL === 'true' ? {
-        rejectUnauthorized: true
+        rejectUnauthorized: false // For Aiven, we accept the certificate
       } : undefined
     },
     listPerPage: 10,
