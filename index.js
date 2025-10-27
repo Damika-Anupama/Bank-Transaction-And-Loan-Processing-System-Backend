@@ -13,7 +13,13 @@ const jwt = require("jsonwebtoken");
 const cors = require('cors');
 const transactionRouter = require('./routes/transaction.router');
 
-app.use(cors());
+// CORS configuration for production and development
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:4200',
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 
 // parse incoming requests as JSON
 app.use(express.json());
@@ -27,7 +33,7 @@ app.get("/", (req, res) => {
 });
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200')
+  res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URL || 'http://localhost:4200')
 
   if (
     req.path === "/api/v1/user/auth"  && req.method === "POST"||
