@@ -134,11 +134,138 @@ This is the main group project given by the Computer Science Department, Univers
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-You can use this backend as a custom bank management system backend.
-This project uses mysql database. If you've already installed mysql, you can use it. You should change username and password in config.js file. I've included custom data in assets/Data folder that you can import to your database. These are the custom accounts in frontend to login using those data:
-- Customer: email = damikaanupama@gmail.com, password = 1234
-- Employee: email = nimalnimal@gmail.com, password = 4567
-- Manager: email = jkesoni@alexa.com, password = Jewelle
+### Step 1: Database Setup with Docker (Recommended)
+
+This project uses MySQL 8.x database. We recommend using Docker for easy setup.
+
+#### Option A: Using Docker (Recommended)
+
+1. **Start Docker Desktop** (if on Windows/Mac) or ensure Docker daemon is running
+
+2. **Create and run MySQL container:**
+   ```sh
+   docker run --name bank-mysql -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=bank -p 3306:3306 -d mysql:8.0
+   ```
+
+3. **Wait for MySQL to initialize (about 30 seconds):**
+   ```sh
+   docker exec bank-mysql mysqladmin ping -h localhost -u root -p1234
+   ```
+
+4. **Import the database dump:**
+   ```sh
+   # From the Backend directory
+   docker exec -i bank-mysql mysql -uroot -p1234 bank < assets/Data/Dump20240216.sql
+   ```
+
+5. **Verify the import:**
+   ```sh
+   docker exec bank-mysql mysql -uroot -p1234 bank -e "SHOW TABLES;"
+   ```
+
+   You should see 13 tables: account, branch, employee, fixed_deposit, loan_basic_detail, loan_installment, manager, normal_loan, online_portal_loan, saving_account, transfer, user, withdrawal
+
+#### Option B: Using Local MySQL Installation
+
+If you have MySQL installed locally:
+
+1. **Create the database:**
+   ```sql
+   CREATE DATABASE bank;
+   ```
+
+2. **Import the dump:**
+   ```sh
+   mysql -u root -p bank < assets/Data/Dump20240216.sql
+   ```
+
+3. **Update database credentials** in `config/config.js`:
+   ```javascript
+   const config = {
+       db: {
+         host: "localhost",
+         user: "your_username",
+         password: "your_password",
+         database: "bank"
+       }
+   };
+   ```
+
+### Step 2: Start the Backend Server
+
+1. **Install dependencies** (if not already done):
+   ```sh
+   npm install
+   ```
+
+2. **Start the server:**
+   ```sh
+   npm start
+   ```
+
+3. **Verify the server is running:**
+   - You should see: `Bank app listening at http://localhost:3000`
+   - The API will be available at: `http://localhost:3000/api/v1/`
+
+### Step 3: Test Login Credentials
+
+The database dump includes pre-configured test accounts for all three user types:
+
+#### Customer Account
+- **Email:** damikaanupama@gmail.com
+- **Password:** 1234
+- **Access:** Account management, transfers, withdrawals, online loan applications, fixed deposits
+
+#### Employee Account
+- **Email:** nimalnimal@gmail.com
+- **Password:** 4567
+- **Access:** Register new customers, create manual loans, process withdrawals
+
+#### Manager Account
+- **Email:** jkesoni@alexa.com
+- **Password:** Jewelle
+- **Access:** Approve/reject loans, add employees, view branch statistics
+
+### Database Contents
+
+The imported database includes:
+- **39 Users** (Customers, Employees, Managers)
+- **5 Branches**
+- **30 Accounts** (Personal and Organization)
+- **15 Saving Accounts** (Child, Teen, Adult, Senior types)
+- **35 Loans** (Personal and Business)
+- **9 Fixed Deposits**
+- **29 Transfers**
+- **20 Withdrawals**
+
+### API Endpoints
+
+Base URL: `http://localhost:3000/api/v1/`
+
+- `/user` - User authentication and management
+- `/employee` - Employee operations
+- `/manager` - Manager operations
+- `/account` - Account management
+- `/loan` - Loan operations
+- `/fd` - Fixed deposit operations
+- `/branch` - Branch management
+- `/transaction` - Transaction history
+
+### Stopping the Application
+
+**Stop the server:** Press `Ctrl+C` in the terminal
+
+**Stop and remove Docker container:**
+```sh
+docker stop bank-mysql
+docker rm bank-mysql
+```
+
+**Stop but keep container (to restart later):**
+```sh
+docker stop bank-mysql
+# To restart: docker start bank-mysql
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
