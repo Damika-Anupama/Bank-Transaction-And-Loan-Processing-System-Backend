@@ -12,6 +12,7 @@ const employeeRouter = require('./routes/employee.router');
 const jwt = require("jsonwebtoken");
 const cors = require('cors');
 const transactionRouter = require('./routes/transaction.router');
+const db = require('./services/db');
 
 // CORS configuration for production and development
 const corsOptions = {
@@ -135,6 +136,67 @@ app.use((err, req, res, next) => {
   res.status(statusCode).json(errorResponse);
   return;
 });
-app.listen(port, () => {
-  console.log(`Bank app listening at http://localhost:${port}`);
+
+// Start server only after successful database connection
+async function startServer() {
+  console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log('🚀 Starting Bank Application Backend...');
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+
+  // Test database connection before starting server
+  const dbConnected = await db.testConnection();
+
+  if (!dbConnected) {
+    console.error('⛔ SERVER START ABORTED!');
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.error('❌ Cannot start server without database connection.');
+    console.error('📋 Please establish database connection before running backend.\n');
+    process.exit(1); // Exit with error code
+  }
+
+  // Start the Express server
+  try {
+    app.listen(port, () => {
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log('✅ SERVER STARTED SUCCESSFULLY!');
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log(`🌐 Server running at: http://localhost:${port}`);
+      console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:4200'}`);
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+      console.log('📡 API Endpoints available:');
+      console.log('   - POST /api/v1/user/auth (Login)');
+      console.log('   - POST /api/v1/user (Register)');
+      console.log('   - /api/v1/user/* (User management)');
+      console.log('   - /api/v1/transaction/* (Transactions)');
+      console.log('   - /api/v1/loan/* (Loans)');
+      console.log('   - /api/v1/fd/* (Fixed Deposits)');
+      console.log('   - /api/v1/branch/* (Branches)');
+      console.log('   - /api/v1/manager/* (Managers)');
+      console.log('   - /api/v1/employee/* (Employees)');
+      console.log('\n✨ Ready to accept requests!\n');
+    });
+  } catch (err) {
+    console.error('\n❌ Failed to start server:', err.message);
+    process.exit(1);
+  }
+}
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+  console.error('\n❌ UNHANDLED PROMISE REJECTION!');
+  console.error('Error:', err.message);
+  console.error('Shutting down server...\n');
+  process.exit(1);
 });
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('\n❌ UNCAUGHT EXCEPTION!');
+  console.error('Error:', err.message);
+  console.error('Shutting down server...\n');
+  process.exit(1);
+});
+
+// Start the application
+startServer();
