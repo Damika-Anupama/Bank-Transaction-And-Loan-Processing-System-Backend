@@ -42,7 +42,7 @@ router.post("/auth", async function (req, res, next) {
 
       if (result) {
         const type = user.data[0].type;
-        const token = createJWT(user);
+        const token = createJWT(user.data[0]);
         res.json({token, type});
       } else {
         res.status(401).json({
@@ -176,14 +176,14 @@ router.post("/", async function (req, res, next) {
     const status = await users.create(req.body);
     const createdUser = await users.getByEmail(req.body.email);
 
-    if (!createdUser) {
+    if (!createdUser || !createdUser.data || createdUser.data.length === 0) {
       return res.status(500).json({
         message: "User created but could not be retrieved",
         error: "USER_RETRIEVAL_AFTER_CREATE_ERROR"
       });
     }
 
-    const jwt = createJWT(createdUser);
+    const jwt = createJWT(createdUser.data[0]);
     res.json({ status, jwt });
   } catch (err) {
     console.error(`Error while creating user:`, err.message);
