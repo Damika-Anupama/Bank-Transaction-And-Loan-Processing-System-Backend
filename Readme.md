@@ -13,22 +13,21 @@ Frontend code repository: https://github.com/Damika-Anupama/Bank-Transaction-And
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/CSE-Semester3-Group7-Project/Backend/">
-    <img src="assets/uom.png" alt="Logo" width="100" height="100" style = "margin: 0 50px 0 0">
-    <img src="assets/logo.png" alt="Logo" width="250" height="100" margin="0 10 0">
+  <a href="https://github.com/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend/">
+    <img src="assets/logo.png" alt="Logo" width="250" height="100">
   </a>
 
   <h3 align="center">Bank Transaction And Loan Processing System - Backend</h3>
 
   <p align="center">
-    A Group Project Done by Group No. 7 for Semester 3 Module CS3043 - Database Systems
+    A full-stack banking application backend with RESTful API services for transaction and loan management
     <br />
-    <a href="https://github.com/CSE-Semester3-Group7-Project/Backend/blob/main/assets/ProjectDescription.pdf"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend"><strong>Explore the repository »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/CSE-Semester3-Group7-Project/Backend/issues">Report Bug</a>
+    <a href="https://github.com/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend/issues">Report Bug</a>
     ·
-    <a href="https://github.com/CSE-Semester3-Group7-Project/Backend/pulls">Request Feature</a>
+    <a href="https://github.com/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend/pulls">Request Feature</a>
   </p>
 </div>
 
@@ -66,7 +65,7 @@ Frontend code repository: https://github.com/Damika-Anupama/Bank-Transaction-And
   <img src="assets/logo1.png" alt="Logo" width="400" height="350" style = "margin: 50px">
 </div>
 <br>
-This is the main group project given by the Computer Science Department, University of Moratuwa in the Semester 3 CS3043 - Database Systems Module. Here contains the backend of the Bank Transaction And Loan Processing System. If you want to go to the frontend of this application, you can find it by following this <a href="https://github.com/CSE-Semester3-Group7-Project/Frontend">link</a>.
+This is a comprehensive banking management system backend built with Node.js and Express. The API provides secure RESTful endpoints for transaction processing, loan management, fixed deposits, and user authentication with JWT tokens. This repository contains the Backend of the Bank Transaction And Loan Processing System. The frontend of this application can be found by following this <a href="https://github.com/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Frontend">link</a>.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -120,7 +119,7 @@ This is the main group project given by the Computer Science Department, Univers
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/CSE-Semester3-Group7-Project/Backend.git
+   git clone https://github.com/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend.git
    ```
 2. Install NPM packages
    ```sh
@@ -320,13 +319,13 @@ Use this space to list resources you find helpful and would like to give credit 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/CSE-Semester3-Group7-Project/Backend.svg?style=for-the-badge
-[contributors-url]: https://github.com/CSE-Semester3-Group7-Project/Backend/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/CSE-Semester3-Group7-Project/Backend.svg?style=for-the-badge
-[forks-url]: https://github.com/CSE-Semester3-Group7-Project/Backend/network/members
-[stars-shield]: https://img.shields.io/github/stars/CSE-Semester3-Group7-Project/Backend.svg?style=for-the-badge
-[stars-url]: https://github.com/CSE-Semester3-Group7-Project/Backend/stargazers
-[issues-shield]: https://img.shields.io/github/issues/CSE-Semester3-Group7-Project/Backend.svg?style=for-the-badge
-[issues-url]: https://github.com/CSE-Semester3-Group7-Project/Backend/issues
-[license-shield]: https://img.shields.io/github/license/CSE-Semester3-Group7-Project/Backend.svg?style=for-the-badge
-[license-url]: https://github.com/CSE-Semester3-Group7-Project/Backend/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend.svg?style=for-the-badge
+[contributors-url]: https://github.com/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend.svg?style=for-the-badge
+[forks-url]: https://github.com/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend/network/members
+[stars-shield]: https://img.shields.io/github/stars/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend.svg?style=for-the-badge
+[stars-url]: https://github.com/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend/stargazers
+[issues-shield]: https://img.shields.io/github/issues/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend.svg?style=for-the-badge
+[issues-url]: https://github.com/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend/issues
+[license-shield]: https://img.shields.io/github/license/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend.svg?style=for-the-badge
+[license-url]: https://github.com/Damika-Anupama/Bank-Transaction-And-Loan-Processing-System-Backend/LICENSE

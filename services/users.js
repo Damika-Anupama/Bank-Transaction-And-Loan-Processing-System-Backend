@@ -4,110 +4,113 @@ const config = require("../config/config");
 const bcrypt = require("bcrypt");
 
 async function getById(id) {
-  const result = await db.query(`SELECT * FROM user WHERE user_id=?`, [id]);
-
-  const data = helper.emptyOrRows(result);
-
-  return { data };
+  try {
+    if (!id) {
+      throw new Error('User ID is required');
+    }
+    const result = await db.query(`SELECT * FROM user WHERE user_id=?`, [id]);
+    const data = helper.emptyOrRows(result);
+    return { data };
+  } catch (err) {
+    console.error('Error in getById:', err.message);
+    throw new Error(`Failed to get user by ID: ${err.message}`);
+  }
 }
 async function getByName(username) {
-  const result = await db.query(`SELECT * FROM user WHERE username=?`, [
-    username,
-  ]);
-
-  const data = helper.emptyOrRows(result);
-
-  return { data };
+  try {
+    if (!username) {
+      throw new Error('Username is required');
+    }
+    const result = await db.query(`SELECT * FROM user WHERE username=?`, [username]);
+    const data = helper.emptyOrRows(result);
+    return { data };
+  } catch (err) {
+    console.error('Error in getByName:', err.message);
+    throw new Error(`Failed to get user by name: ${err.message}`);
+  }
 }
 async function getByEmail(email) {
-  const result = await db.query(`SELECT * FROM user WHERE email=?`, [email]);
-
-  const data = helper.emptyOrRows(result);
-
-  return { data };
+  try {
+    if (!email) {
+      throw new Error('Email is required');
+    }
+    const result = await db.query(`SELECT * FROM user WHERE email=?`, [email]);
+    const data = helper.emptyOrRows(result);
+    return { data };
+  } catch (err) {
+    console.error('Error in getByEmail:', err.message);
+    throw new Error(`Failed to get user by email: ${err.message}`);
+  }
 }
 // get dashboard details
 async function getDashboardDetails(email) {
-  return await db.query(
-    `
-    SELECT
-    type,
-    user_id,
-    (SELECT JSON_ARRAYAGG(JSON_OBJECT('account_id', account_id, 'branch_name', branch_name, 'account_type', account_type, 'amount', amount, 'saving_type', saving_type)) FROM account INNER JOIN branch ON account.branch_id = branch.branch_id WHERE user_id = (SELECT user_id FROM user WHERE email = ?)) AS accounts,
-    username
-  FROM user
-  WHERE email = ?
-  LIMIT 1;  
-   `,
-    [email, email]
-  );
+  try {
+    if (!email) {
+      throw new Error('Email is required');
+    }
+    const result = await db.query(
+      `
+      SELECT
+      type,
+      user_id,
+      (SELECT JSON_ARRAYAGG(JSON_OBJECT('account_id', account_id, 'branch_name', branch_name, 'account_type', account_type, 'amount', amount, 'saving_type', saving_type)) FROM account INNER JOIN branch ON account.branch_id = branch.branch_id WHERE user_id = (SELECT user_id FROM user WHERE email = ?)) AS accounts,
+      username
+    FROM user
+    WHERE email = ?
+    LIMIT 1;
+     `,
+      [email, email]
+    );
+    return result;
+  } catch (err) {
+    console.error('Error in getDashboardDetails:', err.message);
+    throw new Error(`Failed to get dashboard details: ${err.message}`);
+  }
 }
 
 async function getCustomerDetails(page = 1) {
-  const offset = helper.getOffset(page, config.listPerPage);
-  const rows = await db.query(
-    `SELECT * FROM user WHERE type = 'CUSTOMER' LIMIT ${offset},${config.listPerPage}`
-  );
-  const data = helper.emptyOrRows(rows);
-  const meta = { page };
-
-  return {
-    data,
-    meta,
-  };
+  try {
+    const offset = helper.getOffset(page, config.listPerPage);
+    const rows = await db.query(
+      `SELECT * FROM user WHERE type = 'CUSTOMER' LIMIT ?, ?`,
+      [offset, config.listPerPage]
+    );
+    const data = helper.emptyOrRows(rows);
+    const meta = { page };
+    return { data, meta };
+  } catch (err) {
+    console.error('Error in getCustomerDetails:', err.message);
+    throw new Error(`Failed to get customer details: ${err.message}`);
+  }
 }
 async function getMultiple(page = 1) {
-  const offset = helper.getOffset(page, config.listPerPage);
-  const rows = await db.query(
-    `SELECT * FROM user LIMIT ${offset},${config.listPerPage}`
-  );
-  const data = helper.emptyOrRows(rows);
-  const meta = { page };
-
-  return {
-    data,
-    meta,
-  };
+  try {
+    const offset = helper.getOffset(page, config.listPerPage);
+    const rows = await db.query(
+      `SELECT * FROM user LIMIT ?, ?`,
+      [offset, config.listPerPage]
+    );
+    const data = helper.emptyOrRows(rows);
+    const meta = { page };
+    return { data, meta };
+  } catch (err) {
+    console.error('Error in getMultiple:', err.message);
+    throw new Error(`Failed to get users: ${err.message}`);
+  }
 }
 async function create(user) {
-  let userId = 0;
-  const salt = await bcrypt.genSalt(10);
-  const password = await bcrypt.hash(user.password, salt);
-  const result = await db.query(
-    "INSERT INTO user (username, password, fullname, type, gender, dob, address, email, contact_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-    [
-      user.username,
-      password,
-      user.fullname,
-      user.type,
-      user.gender,
-      user.dob,
-      user.address,
-      user.email,
-      user.contact_no,
-    ]
-  );
-
-  let message = "Error in creating the user!";
-
-  if (result.affectedRows) {
-    userId = result.insertId;
-    message = "user created successfully!";
-  }
-
-  return { message, userId };
-}
-
-async function update(id, user) {
-  let message = "User not found";
-  const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(user.password, salt);
-  if (getById(id)) {
+  try {
+    if (!user || !user.username || !user.password || !user.email) {
+      throw new Error('Username, password, and email are required');
+    }
+    let userId = 0;
+    const salt = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(user.password, salt);
     const result = await db.query(
-      "UPDATE user SET username = ?, password = ?, fullname = ?, type = ?, gender = ?, dob = ?, address = ?, email = ?, contact_no = ? WHERE user_id = ?",
+      "INSERT INTO user (username, password, fullname, type, gender, dob, address, email, contact_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         user.username,
-        user.password,
+        password,
         user.fullname,
         user.type,
         user.gender,
@@ -115,34 +118,90 @@ async function update(id, user) {
         user.address,
         user.email,
         user.contact_no,
-        id,
-      ],
-      function (error, results, fields) {
-        if (error) throw error;
-      }
+      ]
     );
-    if (result.affectedRows) {
-      message = "User updated successfully";
-    }
-  } else {
-    message = "Error in updating User";
-  }
 
-  return { message };
+    let message = "Error in creating the user!";
+
+    if (result.affectedRows) {
+      userId = result.insertId;
+      message = "user created successfully!";
+    }
+
+    return { message, userId };
+  } catch (err) {
+    console.error('Error in create:', err.message);
+    throw new Error(`Failed to create user: ${err.message}`);
+  }
+}
+
+async function update(id, user) {
+  try {
+    if (!id) {
+      throw new Error('User ID is required');
+    }
+    if (!user || !user.username || !user.password || !user.email) {
+      throw new Error('Username, password, and email are required');
+    }
+
+    let message = "User not found";
+    const existing = await getById(id);
+
+    if (existing && existing.data && existing.data.length > 0) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(user.password, salt);
+      const result = await db.query(
+        "UPDATE user SET username = ?, password = ?, fullname = ?, type = ?, gender = ?, dob = ?, address = ?, email = ?, contact_no = ? WHERE user_id = ?",
+        [
+          user.username,
+          hashedPassword,
+          user.fullname,
+          user.type,
+          user.gender,
+          user.dob,
+          user.address,
+          user.email,
+          user.contact_no,
+          id,
+        ]
+      );
+      if (result.affectedRows) {
+        message = "User updated successfully";
+      }
+    } else {
+      message = "Error in updating User";
+    }
+
+    return { message };
+  } catch (err) {
+    console.error('Error in update:', err.message);
+    throw new Error(`Failed to update user: ${err.message}`);
+  }
 }
 
 async function remove(id) {
-  let message = "User not found";
-  if (getById(id)) {
-    const result = await db.query(`DELETE FROM user WHERE user_id=${id}`);
-    if (result.affectedRows) {
-      message = "User deleted successfully!";
+  try {
+    if (!id) {
+      throw new Error('User ID is required');
     }
-  } else {
-    message = "Error in deleting user";
-  }
 
-  return { message };
+    let message = "User not found";
+    const existing = await getById(id);
+
+    if (existing && existing.data && existing.data.length > 0) {
+      const result = await db.query(`DELETE FROM user WHERE user_id = ?`, [id]);
+      if (result.affectedRows) {
+        message = "User deleted successfully!";
+      }
+    } else {
+      message = "Error in deleting user";
+    }
+
+    return { message };
+  } catch (err) {
+    console.error('Error in remove:', err.message);
+    throw new Error(`Failed to delete user: ${err.message}`);
+  }
 }
 
 module.exports = {
