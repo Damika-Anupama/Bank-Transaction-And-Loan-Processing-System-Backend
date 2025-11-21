@@ -140,31 +140,52 @@ async function update(id, user) {
     if (!id) {
       throw new Error('User ID is required');
     }
-    if (!user || !user.username || !user.password || !user.email) {
-      throw new Error('Username, password, and email are required');
+    if (!user || !user.username || !user.email) {
+      throw new Error('Username and email are required');
     }
 
     let message = "User not found";
     const existing = await getById(id);
 
     if (existing && existing.data && existing.data.length > 0) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(user.password, salt);
-      const result = await db.query(
-        "UPDATE user SET username = ?, password = ?, fullname = ?, type = ?, gender = ?, dob = ?, address = ?, email = ?, contact_no = ? WHERE user_id = ?",
-        [
+      // If password is provided, hash it. Otherwise, keep existing password
+      let updateQuery;
+      let updateParams;
+
+      if (user.password && user.password.trim().length > 0) {
+        // Update with new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(user.password, salt);
+        updateQuery = "UPDATE user SET username = ?, password = ?, fullname = ?, type = ?, gender = ?, dob = ?, address = ?, email = ?, contact_no = ? WHERE user_id = ?";
+        updateParams = [
           user.username,
           hashedPassword,
-          user.fullname,
-          user.type,
-          user.gender,
-          user.dob,
-          user.address,
+          user.fullname || existing.data[0].fullname,
+          user.type || existing.data[0].type,
+          user.gender || existing.data[0].gender,
+          user.dob || existing.data[0].dob,
+          user.address || existing.data[0].address,
           user.email,
-          user.contact_no,
+          user.contact_no || existing.data[0].contact_no,
           id,
-        ]
-      );
+        ];
+      } else {
+        // Update without changing password
+        updateQuery = "UPDATE user SET username = ?, fullname = ?, type = ?, gender = ?, dob = ?, address = ?, email = ?, contact_no = ? WHERE user_id = ?";
+        updateParams = [
+          user.username,
+          user.fullname || existing.data[0].fullname,
+          user.type || existing.data[0].type,
+          user.gender || existing.data[0].gender,
+          user.dob || existing.data[0].dob,
+          user.address || existing.data[0].address,
+          user.email,
+          user.contact_no || existing.data[0].contact_no,
+          id,
+        ];
+      }
+
+      const result = await db.query(updateQuery, updateParams);
       if (result.affectedRows) {
         message = "User updated successfully";
       }
