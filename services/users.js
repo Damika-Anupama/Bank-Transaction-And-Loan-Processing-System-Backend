@@ -71,9 +71,10 @@ async function getDashboardDetails(email) {
 async function getCustomerDetails(page = 1) {
   try {
     const offset = helper.getOffset(page, config.listPerPage);
+    // Use string interpolation for LIMIT as MySQL prepared statements don't support placeholders for LIMIT
     const rows = await db.query(
-      `SELECT * FROM user WHERE type = 'CUSTOMER' LIMIT ?, ?`,
-      [offset, config.listPerPage]
+      `SELECT * FROM user WHERE type = ? LIMIT ${offset}, ${config.listPerPage}`,
+      ['CUSTOMER']
     );
     const data = helper.emptyOrRows(rows);
     const meta = { page };
@@ -86,9 +87,10 @@ async function getCustomerDetails(page = 1) {
 async function getMultiple(page = 1) {
   try {
     const offset = helper.getOffset(page, config.listPerPage);
+    // Use string interpolation for LIMIT as MySQL prepared statements don't support placeholders for LIMIT
     const rows = await db.query(
-      `SELECT * FROM user LIMIT ?, ?`,
-      [offset, config.listPerPage]
+      `SELECT * FROM user LIMIT ${offset}, ${config.listPerPage}`,
+      []
     );
     const data = helper.emptyOrRows(rows);
     const meta = { page };
