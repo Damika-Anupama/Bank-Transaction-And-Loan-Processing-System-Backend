@@ -76,7 +76,7 @@ app.use((req, res, next) => {
     }
 
     // Verify JWT token
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] }, (err, decoded) => {
       if (err) {
         console.error("JWT verification error:", err.message);
         res.status(401).json({
