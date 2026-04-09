@@ -51,6 +51,7 @@ Frontend code repository: https://github.com/Damika-Anupama/Bank-Transaction-And
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#deployment">Deployment</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -78,11 +79,11 @@ This is a comprehensive banking management system backend built with Node.js and
 
 - [![Express.js](https://img.shields.io/badge/Express.js-4.x-brightgreen.svg?logo=node.js)](https://expressjs.com)
 
-- [![Node.js](https://img.shields.io/badge/Node.js-14.x-brightgreen.svg?logo=node.js)](https://nodejs.org)
+- [![Node.js](https://img.shields.io/badge/Node.js-22.x-brightgreen.svg?logo=node.js)](https://nodejs.org)
 
 - [![MySQL](https://img.shields.io/badge/MySQL-8.x-brightgreen.svg?logo=mysql)](https://www.mysql.com/)
 
-- [![npm](https://img.shields.io/badge/npm-6.x-brightgreen.svg?logo=npm)](https://www.npmjs.com/)
+- [![npm](https://img.shields.io/badge/npm-11.x-brightgreen.svg?logo=npm)](https://www.npmjs.com/)
 
 - [![Git](https://img.shields.io/badge/Git-2.x-brightgreen.svg?logo=git)](https://git-scm.com/)
 
@@ -270,6 +271,96 @@ docker stop bank-mysql
 
 
 
+<!-- DEPLOYMENT -->
+## Deployment
+
+Deploy the complete stack using free cloud services:
+
+```
+Frontend (Angular)  → Vercel         (FREE Forever)
+Backend (Node.js)   → Render.com     (FREE with limitations)
+Database (MySQL)    → Aiven.io       (FREE Tier)
+Keep-Alive Service  → UptimeRobot    (FREE)
+```
+
+### Step 1: Deploy MySQL Database on Aiven.io
+
+1. Sign up at https://aiven.io/ and create a **MySQL** service
+2. Note the connection credentials (Host, Port, User, Password)
+3. Import the database dump:
+   ```bash
+   mysql -h mysql-xxxxx.aivencloud.com -P XXXXX -u avnadmin -p \
+         --ssl-mode=REQUIRED defaultdb < assets/Data/Dump20240216.sql
+   ```
+4. Verify — you should see 13 tables
+
+### Step 2: Deploy Backend to Render.com
+
+1. Sign up at https://render.com/ and create a **Web Service** from this repository
+2. Configure:
+   ```
+   Build Command:  npm install
+   Start Command:  npm start
+   Instance Type:  Free
+   ```
+3. Add environment variables:
+   ```env
+   API_PORT=3000
+   JWT_SECRET=this-is-the-group7-secret-key
+   UV_THREADPOOL_SIZE=16
+   DB_HOST=mysql-xxxxx.aivencloud.com
+   DB_USER=avnadmin
+   DB_PASSWORD=[your-aiven-password]
+   DB_NAME=defaultdb
+   DB_PORT=[your-aiven-port]
+   DB_SSL=true
+   FRONTEND_URL=http://localhost:4200
+   ```
+4. Deploy — your backend URL will be `https://bank-backend-api.onrender.com`
+5. Test: visiting `https://bank-backend-api.onrender.com/` should return `{"message": "ok"}`
+
+> **Note:** Free tier spins down after 15 minutes of inactivity. First request takes 30–60 seconds.
+
+### Step 3: Deploy Frontend to Vercel
+
+1. Update `src/environments/environment.prod.ts` in the frontend repo with the Render URL:
+   ```typescript
+   export const environment = {
+     production: true,
+     apiUrl: 'https://bank-backend-api.onrender.com/api/v1/'
+   };
+   ```
+2. Sign up at https://vercel.com/ and import the frontend repository
+3. Once deployed, note the Vercel URL (e.g. `https://bank-app-frontend.vercel.app`)
+4. Go back to Render and update `FRONTEND_URL` to your Vercel URL, then redeploy
+
+### Step 4: Keep Backend Alive (Optional)
+
+1. Sign up at https://uptimerobot.com/
+2. Add an HTTP monitor pointing to `https://bank-backend-api.onrender.com/`
+3. Set interval to every 5 minutes
+
+### Test Credentials (Live Demo)
+
+| Role | Email | Password |
+|------|-------|----------|
+| Customer | damikaanupama@gmail.com | 1234 |
+| Employee | nimalnimal@gmail.com | 4567 |
+| Manager | jkesoni@alexa.com | Jewelle |
+
+### Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| `connect ECONNREFUSED` | Check Aiven credentials and ensure `DB_SSL=true` |
+| `Access denied for user` | Double-check `DB_PASSWORD` in Render env vars |
+| CORS errors from frontend | Verify `FRONTEND_URL` matches your Vercel URL exactly |
+| `HttpErrorResponse 0` | Backend is sleeping — wait 30–60s and retry |
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
 <!-- CONTRIBUTING -->
 ## Contributing
 
@@ -300,8 +391,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
-
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
 
 * [Choose an Open Source License](https://choosealicense.com)
 * [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
